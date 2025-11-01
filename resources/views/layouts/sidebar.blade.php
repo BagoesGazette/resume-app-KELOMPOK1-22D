@@ -22,6 +22,9 @@
     <div class="sidebar-menu-wrapper">
       <ul class="sidebar-menu">
         <li class="menu-header">Menu</li>
+
+        @role('admin')
+        <!-- Menu untuk admin -->
         <li class="{{ Request::is('/') ? 'active' : '' }}">
           <a class="nav-link" href="/">
             <i class="fas fa-fire"></i> 
@@ -40,18 +43,41 @@
             <span>Kriteria</span>
           </a>
         </li>
-        <li class="{{ Request::is('kriteria') ? 'active' : '' }}">
+        <li class="{{ Request::is('perhitungan') ? 'active' : '' }}">
           <a class="nav-link" href="/">
             <i class="fas fa-tasks"></i> 
             <span>Perhitungan</span>
           </a>
         </li>
-        <li class="{{ Request::is('kriteria') ? 'active' : '' }}">
+        <li class="{{ Request::is('laporan') ? 'active' : '' }}">
           <a class="nav-link" href="/">
             <i class="fas fa-file-alt"></i> 
             <span>Laporan</span>
           </a>
         </li>
+        @endrole
+
+        @role('kandidat')
+        <!-- Menu untuk user -->
+        <li class="{{ Request::is('/') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('home') }}">
+            <i class="fas fa-fire"></i> 
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="{{ Request::is('lowongan-kerja') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('lowongan-kerja.index') }}">
+            <i class="fas fa-briefcase"></i> 
+            <span>Lowongan Kerja</span>
+          </a>
+        </li>
+        <li class="{{ Request::is('hasil') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('hasil.index') }}">
+            <i class="fas fa-poll"></i> 
+            <span>Hasil</span>
+          </a>
+        </li>
+        @endrole
       </ul>
     </div>
 

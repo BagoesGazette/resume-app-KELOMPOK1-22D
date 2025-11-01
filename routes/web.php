@@ -8,4 +8,13 @@ Route::group(['middleware' => ['auth']], function(){
 
     Route::get('/', DashboardController::class)->name('home');
 
+    // Route untuk Kandidat
+    Route::get('/lowongan-kerja', function () {
+        return view('kandidat.lowongan-kerja.index');
+    })->name('lowongan-kerja.index');
+
+    Route::get('/hasil', function () {
+        return view('kandidat.hasil.index');
+    })->name('hasil.index');
+
 });
