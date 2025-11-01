@@ -57,9 +57,13 @@
 
     <!-- Tombol Logout di bawah -->
     <div class="logout-wrapper">
-      <a href="/logout" class="btn btn-primary btn-lg btn-block btn-icon-split">
+      <a href="{{ route('logout') }}" class="btn btn-primary btn-lg btn-block btn-icon-split"
+         onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
         <i class="fas fa-rocket"></i> Logout
       </a>
+      <form id="logout-form-sidebar" action="{{ route('logout') }}" method="POST" class="d-none">
+          @csrf
+      </form>
     </div>
   </aside>
 </div>
