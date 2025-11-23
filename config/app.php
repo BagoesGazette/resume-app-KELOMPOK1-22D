@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'error_reporting' => E_ALL & ~E_WARNING & ~E_DEPRECATED & ~E_NOTICE,
+
 ];
