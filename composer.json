@@ -7,7 +7,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "ext-imagick": "*",
         "google/cloud-vision": "^2.1",
         "guzzlehttp/guzzle": "^7.10",
         "laravel/fortify": "^1.31",
@@ -85,6 +84,7 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "platform-check": false,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true

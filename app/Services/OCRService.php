@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use Google\Cloud\Vision\V1\ImageAnnotatorClient;
-use Google\Cloud\Vision\V1\Image;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Smalot\PdfParser\Parser as PdfParser;
 
 class OCRService
@@ -79,7 +78,7 @@ class OCRService
     {
         switch ($fileType) {
             case 'image':
-                return $this->extractFromImage($filePath);
+                return $this->extractFromImageWithGemini($filePath);
             
             case 'pdf':
                 return $this->extractFromPDF($filePath);
@@ -93,31 +92,73 @@ class OCRService
     }
 
     /**
-     * Extract text from image using Google Vision API
+     * Extract text from image using Gemini Vision
      */
-    protected function extractFromImage(string $filePath): string
+    protected function extractFromImageWithGemini(string $filePath): string
     {
         try {
-            $imageAnnotator = new ImageAnnotatorClient([
-                'credentials' => config('services.google_vision.credentials'),
-            ]);
+            Log::info('OCRService: Using Gemini Vision for image OCR');
+            
+            // Read image and convert to base64
+            $imageData = file_get_contents($filePath);
+            $base64Image = base64_encode($imageData);
+            
+            // Detect mime type
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $filePath);
+            finfo_close($finfo);
+            
+            $apiKey = config('services.gemini.api_key');
+            $apiUrl = config('services.gemini.api_url');
+            
+            // Use Gemini Vision model
+            $response = Http::timeout(60)
+                ->post("{$apiUrl}/models/gemini-2.5-pro:generateContent?key={$apiKey}", [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                [
+                                    'text' => 'Extract all text from this image. Return ONLY the extracted text without any explanation or formatting. If this is a CV/resume, extract all information including name, education, experience, skills, etc.'
+                                ],
+                                [
+                                    'inline_data' => [
+                                        'mime_type' => $mimeType,
+                                        'data' => $base64Image
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    'generationConfig' => [
+                        'temperature' => 0.1,
+                        'maxOutputTokens' => 8192,
+                    ]
+                ]);
 
-            $imageContent = file_get_contents($filePath);
-            $image = (new Image())->setContent($imageContent);
-
-            $response = $imageAnnotator->textDetection($image);
-            $texts = $response->getTextAnnotations();
-
-            if (count($texts) > 0) {
-                $extractedText = $texts[0]->getDescription();
-                $imageAnnotator->close();
-                return $extractedText;
+            if (!$response->successful()) {
+                throw new \Exception("Gemini API request failed: " . $response->body());
             }
 
-            $imageAnnotator->close();
-            throw new \Exception('No text found in image');
+            $data = $response->json();
+            
+            if (!isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+                throw new \Exception("Invalid response format from Gemini API");
+            }
+
+            $extractedText = $data['candidates'][0]['content']['parts'][0]['text'];
+            
+            if (empty(trim($extractedText))) {
+                throw new \Exception('No text found in image');
+            }
+
+            Log::info('OCRService: Image OCR successful with Gemini', [
+                'text_length' => strlen($extractedText),
+            ]);
+
+            return trim($extractedText);
+            
         } catch (\Exception $e) {
-            Log::error('OCRService: Image OCR failed', [
+            Log::error('OCRService: Image OCR with Gemini failed', [
                 'error' => $e->getMessage(),
                 'file_path' => $filePath,
             ]);
@@ -126,12 +167,34 @@ class OCRService
     }
 
     /**
-     * Extract text from PDF using PDFParser (no OCR, direct text extraction)
+     * Extract text from PDF using PDFParser
      */
     protected function extractFromPDF(string $filePath): string
     {
         try {
             Log::info('OCRService: Starting PDF text extraction with PDFParser');
+            
+            // Normalize path
+            $filePath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $filePath);
+            
+            if (!file_exists($filePath)) {
+                throw new \Exception('File does not exist: ' . $filePath);
+            }
+            
+            if (!is_readable($filePath)) {
+                throw new \Exception('File is not readable: ' . $filePath);
+            }
+            
+            $fileSize = filesize($filePath);
+            Log::info('OCRService: PDF file info', [
+                'path' => $filePath,
+                'size' => $fileSize,
+                'readable' => is_readable($filePath),
+            ]);
+            
+            if ($fileSize === 0) {
+                throw new \Exception('File is empty');
+            }
             
             $parser = new PdfParser();
             $pdf = $parser->parseFile($filePath);
@@ -139,9 +202,9 @@ class OCRService
             $text = $pdf->getText();
             
             if (empty(trim($text))) {
-                Log::warning('OCRService: PDFParser returned empty text, trying OCR method');
-                // Fallback ke Google Vision jika PDF adalah scanned document
-                return $this->extractFromPDFWithOCR($filePath);
+                Log::warning('OCRService: PDFParser returned empty text, trying Gemini OCR for scanned PDF');
+                // Fallback: Convert PDF to image then use Gemini
+                return $this->extractFromScannedPDFWithGemini($filePath);
             }
 
             Log::info('OCRService: PDF text extracted successfully', [
@@ -156,43 +219,50 @@ class OCRService
                 'file_path' => $filePath,
             ]);
             
-            // Fallback ke OCR method
-            Log::info('OCRService: Attempting OCR fallback for PDF');
+            // Try Gemini as fallback
             try {
-                return $this->extractFromPDFWithOCR($filePath);
-            } catch (\Exception $ocrException) {
+                Log::info('OCRService: Trying Gemini as fallback for PDF');
+                return $this->extractFromScannedPDFWithGemini($filePath);
+            } catch (\Exception $geminiError) {
                 throw new \Exception('PDF extraction failed: ' . $e->getMessage());
             }
         }
     }
 
     /**
-     * Extract text from PDF using Google Vision OCR (for scanned PDFs)
+     * Extract text from scanned PDF using Gemini (requires Imagick)
      */
-    protected function extractFromPDFWithOCR(string $filePath): string
+    protected function extractFromScannedPDFWithGemini(string $filePath): string
     {
         try {
-            Log::info('OCRService: Using Google Vision OCR for PDF');
-            
-            // Convert PDF first page to image
-            $imagePath = $this->convertPDFToImage($filePath);
-            
-            if (!$imagePath) {
-                throw new \Exception('Could not convert PDF to image');
+            if (!extension_loaded('imagick')) {
+                throw new \Exception('Imagick extension required for scanned PDF. Please install or convert PDF to image first.');
             }
+
+            Log::info('OCRService: Converting PDF to image for Gemini OCR');
             
-            // Extract text using Vision API
-            $text = $this->extractFromImage($imagePath);
+            $pdf = new \Imagick();
+            $pdf->setResolution(200, 200);
+            $pdf->readImage($filePath . '[0]'); // Read first page only for now
+            $pdf->setImageFormat('jpg');
             
-            // Cleanup temp image
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
+            // Save to temp file
+            $tempImagePath = sys_get_temp_dir() . '/pdf_page_' . time() . '.jpg';
+            $pdf->writeImage($tempImagePath);
+            $pdf->clear();
+
+            // Extract text from image
+            $text = $this->extractFromImageWithGemini($tempImagePath);
+            
+            // Cleanup
+            if (file_exists($tempImagePath)) {
+                unlink($tempImagePath);
             }
-            
+
             return $text;
             
         } catch (\Exception $e) {
-            Log::error('OCRService: PDF OCR fallback failed', [
+            Log::error('OCRService: Scanned PDF OCR failed', [
                 'error' => $e->getMessage(),
             ]);
             throw $e;
@@ -200,18 +270,7 @@ class OCRService
     }
 
     /**
-     * Convert PDF first page to image (simple method without Imagick)
-     */
-    protected function convertPDFToImage(string $pdfPath): ?string
-    {
-        // For now, skip this if Imagick not available
-        // You can implement using Ghostscript or other tools later
-        Log::warning('OCRService: PDF to image conversion not available without Imagick');
-        return null;
-    }
-
-    /**
-     * Extract text from DOCX (direct text extraction, no OCR needed)
+     * Extract text from DOCX
      */
     protected function extractFromDocx(string $filePath): string
     {
@@ -226,7 +285,6 @@ class OCRService
                     throw new \Exception('Could not read document.xml from DOCX');
                 }
 
-                // Remove XML tags and extract text
                 $content = str_replace('</w:p>', "\n", $content);
                 $content = strip_tags($content);
                 $content = trim($content);

@@ -352,4 +352,47 @@ class CvSubmissionController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get submission status for polling (lightweight)
+     */
+    public function status(int $id)
+    {
+        try {
+            $submission = CvSubmission::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $submission->id,
+                    'status' => $submission->status,
+                    'progress' => $this->calculateProgress($submission->status),
+                    'processing_error' => $submission->processing_error,
+                    'updated_at' => $submission->updated_at,
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Submission not found',
+            ], 404);
+        }
+    }
+
+    /**
+     * Calculate progress percentage based on status
+     */
+    private function calculateProgress(string $status): int
+    {
+        return match($status) {
+            'pending' => 20,
+            'processing' => 60,
+            'completed' => 100,
+            'failed' => 0,
+            default => 0,
+        };
+    }
 }

@@ -1,0 +1,54 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('job_applications', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('jobopening_id');
+            $table->foreign('jobopening_id')->references('id')->on('jobopening')->onDelete('cascade');
+            
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('cv_submission_id')->nullable()->constrained('cv_submissions')->onDelete('set null');
+            
+            // Status lamaran
+            $table->enum('status', ['draft', 'submitted', 'reviewed', 'interview', 'accepted', 'rejected'])->default('draft');
+            
+            // Data dari CV (snapshot)
+            $table->string('pendidikan_terakhir')->nullable();
+            $table->text('rangkuman_pendidikan')->nullable();
+            $table->string('ipk_nilai_akhir')->nullable();
+            $table->string('pengalaman_kerja_terakhir')->nullable();
+            $table->text('rangkuman_pengalaman_kerja')->nullable();
+            $table->text('rangkuman_sertifikasi_prestasi')->nullable();
+            $table->text('rangkuman_profil')->nullable();
+            $table->json('hardskills')->nullable();
+            $table->json('softskills')->nullable();
+            
+            // Additional data
+            $table->text('cover_letter')->nullable();
+            $table->string('expected_salary')->nullable();
+            
+            // Review by HR
+            $table->foreignId('reviewed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('reviewed_at')->nullable();
+            $table->text('review_notes')->nullable();
+            
+            $table->timestamps();
+            $table->softDeletes();
+            
+            $table->index(['jobopening_id', 'user_id']);
+            $table->index('status');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('job_applications');
+    }
+};
