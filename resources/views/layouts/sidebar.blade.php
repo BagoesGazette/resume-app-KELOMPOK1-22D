@@ -38,7 +38,7 @@
           </a>
         </li>
         <li class="{{ Request::is('kriteria') ? 'active' : '' }}">
-          <a class="nav-link" href="/">
+          <a class="nav-link" href="{{ route('kriteria.index') }}">
             <i class="fas fa-columns"></i> 
             <span>Kriteria</span>
           </a>

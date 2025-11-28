@@ -15,8 +15,12 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/components.css">
+  
   <style>
 
+    body{
+      background-color: #F6F3F3 !important;
+    }
     #sidebar-wrapper {
       position: relative;
       height: 100vh;
