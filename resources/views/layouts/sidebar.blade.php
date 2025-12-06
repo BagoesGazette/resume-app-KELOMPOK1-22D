@@ -31,10 +31,16 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="{{ Request::is('users') ? 'active' : '' }}">
-          <a class="nav-link" href="/">
+        <li class="{{ Request::is('users*') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('users.index') }}">
             <i class="fas fa-users"></i> 
-            <span>Users</span>
+            <span>Pengguna</span>
+          </a>
+        </li>
+        <li class="{{ Request::is('job*') ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('job.index') }}">
+            <i class="fas fa-briefcase"></i> 
+            <span>Lowongan Kerja</span>
           </a>
         </li>
         <li class="{{ Request::is('kriteria') ? 'active' : '' }}">
@@ -65,7 +71,7 @@
             <span>Dashboard</span>
           </a>
         </li>
-        <li class="{{ Request::is('lowongan-kerja') ? 'active' : '' }}">
+        <li class="{{ Request::is('lowongan-kerja*') ? 'active' : '' }}">
           <a class="nav-link" href="{{ route('lowongan-kerja.index') }}">
             <i class="fas fa-briefcase"></i> 
             <span>Lowongan Kerja</span>

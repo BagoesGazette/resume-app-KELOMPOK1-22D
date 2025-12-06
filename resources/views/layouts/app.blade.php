@@ -7,14 +7,19 @@
   <title>Selamat Datang</title>
 
   <!-- General CSS Files -->
-  <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}">
+
+  <link rel="stylesheet" href="{{ asset('assets/modules/datatables/datatables.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- CSS Libraries -->
   @stack('custom-css')
   <!-- Template CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
   
   <style>
 
@@ -87,11 +92,24 @@
   <script src="{{ asset('assets/js/stisla.js') }}"></script>
   
   <!-- JS Libraies -->
+  <script src="{{ asset('assets/modules/datatables/datatables.min.js') }}"></script>
+  <script src="{{ asset('assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js') }}"></script>
+  <script src="{{ asset('assets/modules/jquery-ui/jquery-ui.min.js') }}"></script>
   @stack('custom-js')
   <!-- Page Specific JS File -->
-  
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(Session::has('success'))
+    <script>
+      Swal.fire({
+        title: "Berhasil!",
+        text: '{{ Session::get("success") }}',
+        icon: "success"
+      });
+    </script>
+    @endif
   <!-- Template JS File -->
-  <script src="assets/js/scripts.js"></script>
-  <script src="assets/js/custom.js"></script>
+  <script src="{{ asset('assets/js/scripts.js') }}"></script>
+  <script src="{{ asset('assets/js/custom.js') }}"></script>
 </body>
 </html>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('tipe')->nullable(); // full-time, part-time, contract
             $table->date('tanggal_tutup')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
+            $table->string('category')->nullable();
             $table->timestamps();
         });
     }
