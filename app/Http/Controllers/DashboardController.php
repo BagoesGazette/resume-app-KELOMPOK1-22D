@@ -15,10 +15,12 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {
         $pengguna = User::role('kandidat')->count();
-        if (Auth::user()->role('kandidat')) {
+
+        if (Auth::user()->hasRole('kandidat')) {
             return view('dashboard.kandidat');
-        }else{
+        } else {
             return view('dashboard.index', compact('pengguna'));
         }
     }
+
 }
