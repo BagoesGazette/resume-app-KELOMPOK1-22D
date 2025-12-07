@@ -618,9 +618,9 @@
                         <h4><i class="fas fa-upload"></i> Form Upload</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('cv.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                        <form action="{{ route('cv.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm" data-job-id="{{ $lowongan->id }}">
                             @csrf
-                            
+                            <input type="hidden" name="job_id" value="{{ $lowongan->id }}">
                             <!-- Dropzone -->
                             <div class="dropzone-wrapper">
                                 <div class="dropzone" id="dropzone">
@@ -698,11 +698,11 @@
                         <span>CV Anda akan digunakan untuk semua lamaran pekerjaan</span>
                     </div>
                     <div class="submit-buttons">
-                        <a href="{{ url()->previous() }}" class="btn btn-submit btn-secondary">
+                        <a href="{{ route('lowongan-kerja.show', $lowongan->id) }}" class="btn btn-submit btn-secondary">
                             <i class="fas fa-arrow-left mr-2"></i> Kembali
                         </a>
                         <button type="submit" form="uploadForm" class="btn btn-submit btn-primary" id="submitBtn" disabled>
-                            <i class="fas fa-cloud-upload-alt mr-2"></i> Upload CV
+                            <i class="fas fa-cloud-upload-alt mr-2"></i> Upload & Lanjutkan
                         </button>
                     </div>
                 </div>
@@ -710,22 +710,32 @@
 
             <div class="col-lg-4">
                 <!-- Current CV -->
-                @if(isset($currentCV))
+                @if(isset($currentCv))
                 <div class="current-cv-card">
                     <h6><i class="fas fa-file-check"></i> CV Saat Ini</h6>
                     <div class="current-cv-item">
                         <div class="current-cv-icon">
-                            <i class="fas fa-file-pdf"></i>
+                            @if($currentCv->cv_file_type == 'pdf')
+                                <i class="fas fa-file-pdf"></i>
+                            @else
+                                <i class="fas fa-file-word"></i>
+                            @endif
                         </div>
                         <div class="current-cv-info">
-                            <h6>{{ $currentCV->filename ?? 'CV_John_Doe.pdf' }}</h6>
-                            <small>Diupload: {{ $currentCV->created_at ?? '01 Des 2025' }}</small>
+                            <h6>{{ $currentCv->original_file_name }}</h6>
+                            <small>Diupload: {{ $currentCv->created_at->diffForHumans() }}</small>
                         </div>
                         <div class="current-cv-actions">
-                            <a href="#" title="Download"><i class="fas fa-download"></i></a>
-                            <a href="#" title="Lihat"><i class="fas fa-eye"></i></a>
+                            <a href="{{ $currentCv->cv_file_url }}" target="_blank" title="Lihat"><i class="fas fa-eye"></i></a>
                         </div>
                     </div>
+                    <form action="{{ route('lowongan-kerja.process-cv', $lowongan->id) }}" method="POST" class="mt-3">
+                        @csrf
+                        <input type="hidden" name="cv_submission_id" value="{{ $currentCv->id }}">
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-check-circle mr-2"></i> Gunakan CV Ini & Lanjutkan
+                        </button>
+                    </form>
                 </div>
                 @else
                 <div class="current-cv-card">
@@ -786,6 +796,7 @@ $(document).ready(function() {
     const uploadProgress = $('#uploadProgress');
     const progressBar = $('#progressBar');
     const progressPercent = $('#progressPercent');
+    const uploadForm = $('#uploadForm');
 
     // Click to browse
     dropzone.on('click', function() {
@@ -817,10 +828,13 @@ $(document).ready(function() {
     });
 
     // File input change
-    fileInput.on('change', function() {
-        if (this.files.length > 0) {
-            handleFile(this.files[0]);
-        }
+    fileInput.on('change', function() { if (this.files.length > 0) { handleFile(this.files[0]); } });
+    $('#removeFile').on('click', function(e) {
+        e.stopPropagation();
+        fileInput.val('');
+        filePreview.removeClass('show');
+        submitBtn.prop('disabled', true);
+        dropzone.find('.dropzone-icon').css('transform', 'scale(1)');
     });
 
     // Handle file
@@ -885,26 +899,122 @@ $(document).ready(function() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    // Form submit with progress
-    $('#uploadForm').on('submit', function(e) {
-        // Show progress bar
+    // Form submission logic
+    uploadForm.on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const url = $(this).attr('action');
+
         uploadProgress.addClass('show');
         submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Mengupload...');
 
-        // Simulate progress (for demo - remove in production with real AJAX)
-        let progress = 0;
-        const interval = setInterval(function() {
-            progress += Math.random() * 30;
-            if (progress > 100) progress = 100;
-            
-            progressBar.css('width', progress + '%');
-            progressPercent.text(Math.round(progress) + '%');
-
-            if (progress >= 100) {
-                clearInterval(interval);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            xhr: function() {
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function(evt) {
+                    if (evt.lengthComputable) {
+                        const percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                        progressBar.css('width', percentComplete + '%');
+                        progressPercent.text(percentComplete + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            success: function(response) {
+                if (response.success) {
+                    submitBtn.html('<i class="fas fa-cogs mr-2"></i> Memproses CV...');
+                    pollStatus(response.submission_id);
+                } else {
+                    handleUploadError(response.message || 'Terjadi kesalahan.');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                const errorMsg = jqXHR.responseJSON?.message || 'Gagal mengupload file.';
+                handleUploadError(errorMsg);
             }
-        }, 200);
+        });
     });
+
+    function pollStatus(submissionId) {
+        // Tampilkan modal loading awal
+        Swal.fire({
+            title: 'Memproses CV Anda',
+            html: 'Mohon tunggu sebentar...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        const stepMessages = {
+            'downloading': 'Mengunduh file...',
+            'ocr': 'Mengekstrak teks dari CV...',
+            'analyzing': 'Menganalisis konten CV dengan AI...',
+            'saving': 'Menyimpan hasil analisis...',
+            'finished': 'Proses selesai!',
+        };
+
+        const pollInterval = setInterval(() => {
+            $.get(`/cv-submission/${submissionId}/status`, function(response) {
+                if (response.success) {
+                    // Update teks modal berdasarkan langkah proses
+                    const message = stepMessages[response.processing_step] || 'Memproses...';
+                    $('.swal2-html-container').text(message);
+
+                    if (response.status === 'completed') {
+                        clearInterval(pollInterval);
+                        Swal.update({
+                            icon: 'success',
+                            title: 'CV Berhasil Diproses!',
+                            text: 'Anda akan diarahkan ke halaman selanjutnya.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        
+                        // Redirect setelah modal sukses tertutup
+                        setTimeout(() => {
+                            const jobId = uploadForm.data('job-id');
+                            const form = $('<form>', { 'method': 'POST', 'action': `/lowongan-kerja/${jobId}/process-cv` });
+                            form.append($('<input>', {'type': 'hidden', 'name': '_token', 'value': '{{ csrf_token() }}' }));
+                            form.append($('<input>', {'type': 'hidden', 'name': 'cv_submission_id', 'value': submissionId }));
+                            $('body').append(form);
+                            form.submit();
+                        }, 1500);
+
+                    } else if (response.status === 'failed') {
+                        clearInterval(pollInterval);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Memproses CV',
+                            text: response.error || 'Terjadi kesalahan saat memproses CV Anda.',
+                        });
+                        handleUploadError('Gagal memproses CV.');
+                    }
+                }
+            }).fail(function() {
+                 clearInterval(pollInterval);
+                 Swal.close();
+                 handleUploadError('Gagal memeriksa status CV.');
+            });
+        }, 2500); // Poll every 2.5 seconds
+    }
+
+    function handleUploadError(message) {
+        uploadProgress.removeClass('show');
+        submitBtn.prop('disabled', false).html('<i class="fas fa-cloud-upload-alt mr-2"></i> Coba Lagi');
+        Swal.fire({
+            icon: 'error',
+            title: 'Upload Gagal',
+            text: message,
+        });
+    }
 });
 </script>
 @endpush

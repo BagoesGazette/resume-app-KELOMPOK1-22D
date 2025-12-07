@@ -23,7 +23,12 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/lowongan-kerja', [LowonganKerjaController::class, 'index'])->name('lowongan-kerja.index');
     Route::get('/lowongan-kerja/{id}', [LowonganKerjaController::class, 'show'])->name('lowongan-kerja.show');
     Route::get('/lowongan-kerja/{id}/create', [LowonganKerjaController::class, 'create'])->name('lowongan-kerja.form');
-     Route::post('/lowongan-kerja/cv', [LowonganKerjaController::class, 'store'])->name('cv.store');
+    Route::post('/lowongan-kerja/cv', [LowonganKerjaController::class, 'store'])->name('cv.store');
+    Route::get('/cv-submission/{id}/status', [LowonganKerjaController::class, 'status'])->name('cv.status');
+    Route::post('/lowongan-kerja/{id}/process-cv', [\App\Http\Controllers\Kandidat\JobApplicationController::class, 'processCv'])->name('lowongan-kerja.process-cv');
+
+    Route::get('/lamaran/{id}/validate', [\App\Http\Controllers\Kandidat\JobApplicationController::class, 'validate'])->name('lamaran.validate');
+    Route::post('/lamaran/{id}/submit', [\App\Http\Controllers\Kandidat\JobApplicationController::class, 'submit'])->name('lamaran.submit');
 
     Route::get('/hasil', function () {
         return view('kandidat.hasil.index');
