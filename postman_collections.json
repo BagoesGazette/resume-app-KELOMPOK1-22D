@@ -1,0 +1,477 @@
+{
+	"info": {
+		"_postman_id": "resume-app-api-collection-v2",
+		"name": "Resume App - CV Processing API (Fixed)",
+		"description": "API collection for CV upload, processing with OCR & AI classification",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{api_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "api_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "submission_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "0. Test API",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/test",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"test"
+					]
+				},
+				"description": "Test if API is working"
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "1. Create API Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.token) {",
+									"        pm.collectionVariables.set('api_token', jsonData.token);",
+									"        console.log('✅ Token saved:', jsonData.token);",
+									"    }",
+									"}",
+									"",
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Token is returned', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.token).to.not.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password\",\n    \"device_name\": \"postman-testing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"token",
+								"create"
+							]
+						},
+						"description": "Create API token using email & password. Token will be saved automatically."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CV Submissions",
+			"item": [
+				{
+					"name": "2. Upload CV",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data.submission_id) {",
+									"        pm.collectionVariables.set('submission_id', jsonData.data.submission_id);",
+									"        console.log('✅ Submission ID saved:', jsonData.data.submission_id);",
+									"        console.log('📄 File:', jsonData.data.file_name);",
+									"        console.log('📊 Status:', jsonData.data.status);",
+									"    }",
+									"}",
+									"",
+									"pm.test('Upload successful', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.data.submission_id).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "cv_file",
+									"description": "Upload CV (PDF/JPG/PNG/DOCX - Max 10MB)",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cv-submissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cv-submissions"
+							]
+						},
+						"description": "Upload CV file. Processing happens in background."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Check Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"const status = jsonData.data.status;",
+									"",
+									"console.log('📊 Status:', status);",
+									"",
+									"if (status === 'pending') {",
+									"    console.log('⏳ Waiting in queue...');",
+									"} else if (status === 'processing') {",
+									"    console.log('⚙️ Processing CV...');",
+									"} else if (status === 'completed') {",
+									"    console.log('✅ Processing completed!');",
+									"} else if (status === 'failed') {",
+									"    console.log('❌ Processing failed');",
+									"}",
+									"",
+									"pm.test('Status retrieved', function () {",
+									"    pm.expect(jsonData.data.status).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cv-submissions/{{submission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cv-submissions",
+								"{{submission_id}}"
+							]
+						},
+						"description": "Check CV processing status. Poll every 3-5 seconds."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Full Results",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData.data.classification) {",
+									"    const cls = jsonData.data.classification;",
+									"    console.log('=== 📋 CV Classification Results ===');",
+									"    console.log('🎓 Education:', cls.pendidikan_terakhir);",
+									"    console.log('📊 GPA:', cls.ipk_nilai_akhir);",
+									"    console.log('💼 Last Position:', cls.pengalaman_kerja_terakhir);",
+									"    console.log('🔧 Hard Skills:', cls.hardskills?.length || 0, 'items');",
+									"    console.log('💡 Soft Skills:', cls.softskills?.length || 0, 'items');",
+									"}",
+									"",
+									"pm.test('Classification exists', function () {",
+									"    pm.expect(jsonData.data.classification).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cv-submissions/{{submission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cv-submissions",
+								"{{submission_id}}"
+							]
+						},
+						"description": "Get complete CV data with AI classification"
+					},
+					"response": []
+				},
+				{
+					"name": "5. List All CVs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"console.log('📚 Total CVs:', jsonData.data.total);",
+									"console.log('📄 Page:', jsonData.data.current_page, '/', jsonData.data.last_page);",
+									"",
+									"pm.test('Returns array', function () {",
+									"    pm.expect(jsonData.data.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cv-submissions?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cv-submissions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Update CV Data",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pendidikan_terakhir\": \"S1 Teknik Informatika\",\n    \"ipk_nilai_akhir\": \"3.75\",\n    \"hardskills\": [\"PHP\", \"Laravel\", \"JavaScript\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cv-submissions/{{submission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cv-submissions",
+								"{{submission_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Delete CV",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cv-submissions/{{submission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cv-submissions",
+								"{{submission_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Token Management",
+			"item": [
+				{
+					"name": "List User Tokens",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tokens",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Token",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tokens/:token_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tokens",
+								":token_id"
+							],
+							"variable": [
+								{
+									"key": "token_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
