@@ -173,59 +173,37 @@ class OCRService
     {
         try {
             Log::info('OCRService: Starting PDF text extraction with PDFParser');
-            
-            // Normalize path
-            $filePath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $filePath);
-            
-            if (!file_exists($filePath)) {
-                throw new \Exception('File does not exist: ' . $filePath);
-            }
-            
-            if (!is_readable($filePath)) {
-                throw new \Exception('File is not readable: ' . $filePath);
-            }
-            
-            $fileSize = filesize($filePath);
-            Log::info('OCRService: PDF file info', [
+
+            $fileInfo = [
                 'path' => $filePath,
-                'size' => $fileSize,
+                'size' => file_exists($filePath) ? filesize($filePath) : 0,
                 'readable' => is_readable($filePath),
-            ]);
-            
-            if ($fileSize === 0) {
-                throw new \Exception('File is empty');
+            ];
+            Log::info('OCRService: PDF file info', $fileInfo);
+
+            // 1. Memeriksa apakah library PDFParser ada
+            if (!class_exists(PdfParser::class)) {
+                throw new \Exception('PDFParser library is not installed. Please run "composer require smalot/pdfparser".');
             }
-            
+
             $parser = new PdfParser();
-            $pdf = $parser->parseFile($filePath);
-            
-            $text = $pdf->getText();
-            
+            $text = $parser->parseFile($filePath)->getText();
+
+            // 2. PERUBAHAN UTAMA: Jika teks kosong, lemparkan error alih-alih mencoba Imagick
             if (empty(trim($text))) {
-                Log::warning('OCRService: PDFParser returned empty text, trying Gemini OCR for scanned PDF');
-                // Fallback: Convert PDF to image then use Gemini
-                return $this->extractFromScannedPDFWithGemini($filePath);
+                // Job akan menangkap exception ini dan menandai proses sebagai gagal.
+                throw new \Exception('PDFParser returned empty text. The file is likely a scanned image, and Imagick processing is currently disabled.');
             }
 
-            Log::info('OCRService: PDF text extracted successfully', [
-                'text_length' => strlen($text),
-            ]);
+            Log::info('OCRService: PDF text extracted successfully', ['text_length' => strlen($text)]);
+            return $text;
 
-            return trim($text);
-            
         } catch (\Exception $e) {
-            Log::error('OCRService: PDF text extraction failed', [
-                'error' => $e->getMessage(),
-                'file_path' => $filePath,
+            Log::error('OCRService: PDF extraction failed', [
+                'error' => $e->getMessage()
             ]);
-            
-            // Try Gemini as fallback
-            try {
-                Log::info('OCRService: Trying Gemini as fallback for PDF');
-                return $this->extractFromScannedPDFWithGemini($filePath);
-            } catch (\Exception $geminiError) {
-                throw new \Exception('PDF extraction failed: ' . $e->getMessage());
-            }
+            // Lemparkan kembali exception agar bisa ditangkap oleh job
+            throw $e;
         }
     }
 
