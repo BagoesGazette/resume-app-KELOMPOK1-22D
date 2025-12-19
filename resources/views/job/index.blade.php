@@ -20,7 +20,7 @@
                                 <th scope="col">Judul</th>
                                 <th scope="col">Perusahaan</th>
                                 <th scope="col">Lokasi</th>
-                                <th scope="col">Tipe</th>
+                                <th scope="col">Total Pelamar</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Aksi</th>
                             </tr>
@@ -48,7 +48,7 @@
                     { data: "judul", name: "judul" },
                     { data: "perusahaan", name: "perusahaan" },
                     { data: "lokasi", name: "lokasi" },
-                    { data: "tipe", name: "tipe" },
+                    { data: "total_pelamar", name: "total_pelamar" },
                     { data: "status", name: "status" },
                     { data: "action", name: "action" },
                 ],

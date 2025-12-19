@@ -355,7 +355,7 @@
             </div>
 
             <!-- Form -->
-            <form action="{{ route('lamaran.submit', $application->id) }}" method="POST" id="applicationForm">
+            <form action="{{ route('lamaran.submit', $application->id) }}" method="POST" id="applicationForm" autocomplete="off">
                 @csrf
 
                 <!-- Rangkuman Profil -->
@@ -375,7 +375,7 @@
                             class="form-control" 
                             rows="4"
                             placeholder="Contoh: Saya adalah profesional IT dengan pengalaman 5 tahun di bidang web development..."
-                            maxlength="1000">{{ old('rangkuman_profil', $application->rangkuman_profil) }}</textarea>
+                            maxlength="1000">{{ old('rangkuman_profil', $application->cvSubmission->rangkuman_profil) }}</textarea>
                         <small class="form-text">
                             <i class="fas fa-info-circle"></i>
                             Tuliskan ringkasan singkat tentang latar belakang dan keahlian Anda
@@ -390,7 +390,33 @@
                         <h5>Pendidikan</h5>
                     </div>
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="tipe_pendidikan_terakhir">
+                                    Tipe Pendidikan
+                                </label>
+                                @php
+                                    $pendidikan = [
+                                        1 => 'Diploma (D3)',
+                                        2 => 'Sarjana (S1)',
+                                        3 => 'Magister (S2)',
+                                        4 => 'Doktor (S3)',
+                                    ];
+                                @endphp
+                                <select name="tipe_pendidikan" class="form-control @error('tipe_pendidikan') is-invalid @enderror">
+                                    <option selected disabled>Pilih Data</option>
+                                    @foreach ($pendidikan as $key => $item)
+                                        <option value="{{ $key }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                                @error('tipe_pendidikan')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="pendidikan_terakhir">
                                     Pendidikan Terakhir
@@ -400,7 +426,7 @@
                                     name="pendidikan_terakhir" 
                                     id="pendidikan_terakhir" 
                                     class="form-control" 
-                                    value="{{ old('pendidikan_terakhir', $application->pendidikan_terakhir) }}"
+                                    value="{{ old('pendidikan_terakhir', $application->cvSubmission->pendidikan_terakhir) }}"
                                     placeholder="Contoh: S1 Teknik Informatika - Universitas Indonesia">
                             </div>
                         </div>
@@ -413,9 +439,14 @@
                                     type="text" 
                                     name="ipk_nilai_akhir" 
                                     id="ipk_nilai_akhir" 
-                                    class="form-control" 
-                                    value="{{ old('ipk_nilai_akhir', $application->ipk_nilai_akhir) }}"
+                                    class="form-control @error('ipk_nilai_akhir') is-invalid @enderror" 
+                                    value="{{ old('ipk_nilai_akhir', $application->cvSubmission->ipk_nilai_akhir) }}"
                                     placeholder="Contoh: 3.75">
+                                 @error('ipk_nilai_akhir')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -430,7 +461,7 @@
                             class="form-control" 
                             rows="3"
                             placeholder="Contoh: Lulus dengan predikat cum laude, aktif dalam organisasi kampus..."
-                            maxlength="500">{{ old('rangkuman_pendidikan', $application->rangkuman_pendidikan) }}</textarea>
+                            maxlength="500">{{ old('rangkuman_pendidikan', $application->cvSubmission->rangkuman_pendidikan) }}</textarea>
                     </div>
                 </div>
 
@@ -449,8 +480,25 @@
                             name="pengalaman_kerja_terakhir" 
                             id="pengalaman_kerja_terakhir" 
                             class="form-control" 
-                            value="{{ old('pengalaman_kerja_terakhir', $application->pengalaman_kerja_terakhir) }}"
+                            value="{{ old('pengalaman_kerja_terakhir', $application->cvSubmission->pengalaman_kerja_terakhir) }}"
                             placeholder="Contoh: Senior Web Developer di PT. Tech Indonesia (2020-2024)">
+                    </div>
+                    <div class="form-group">
+                        <label for="total_pengalaman_kerja">
+                            Total Pengalaman Kerja
+                        </label>
+                        <input 
+                            type="number" 
+                            name="total_pengalaman_kerja" 
+                            id="total_pengalaman_kerja" 
+                            class="form-control @error('total_pengalaman_kerja') is-invalid @enderror" 
+                            value="{{ old('total_pengalaman_kerja', $application->cvSubmission->total_pengalaman_kerja) }}"
+                            placeholder="Contoh: 4">
+                            @error('total_pengalaman_kerja')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                     </div>
                     <div class="form-group">
                         <label for="rangkuman_pengalaman_kerja">
@@ -462,7 +510,7 @@
                             class="form-control" 
                             rows="4"
                             placeholder="Contoh: Bertanggung jawab dalam pengembangan aplikasi web, mengelola tim developer..."
-                            maxlength="1000">{{ old('rangkuman_pengalaman_kerja', $application->rangkuman_pengalaman_kerja) }}</textarea>
+                            maxlength="1000">{{ old('rangkuman_pengalaman_kerja', $application->cvSubmission->rangkuman_pengalaman_kerja) }}</textarea>
                         <small class="form-text">
                             <i class="fas fa-info-circle"></i>
                             Jelaskan tanggung jawab dan pencapaian Anda di posisi terakhir
@@ -492,7 +540,7 @@
                                     name="hardskills" 
                                     id="hardskills" 
                                     class="form-control" 
-                                    value="{{ old('hardskills', is_array($application->hardskills) ? implode(', ', $application->hardskills) : $application->hardskills) }}"
+                                    value="{{ old('hardskills', is_array($application->cvSubmission->hardskills) ? implode(', ', $application->cvSubmission->hardskills) : $application->cvSubmission->hardskills) }}"
                                     placeholder="Contoh: PHP, Laravel, MySQL, JavaScript">
                                 <small class="form-text">
                                     Keahlian teknis dan spesifik
@@ -510,7 +558,7 @@
                                     name="softskills" 
                                     id="softskills" 
                                     class="form-control" 
-                                    value="{{ old('softskills', is_array($application->softskills) ? implode(', ', $application->softskills) : $application->softskills) }}"
+                                    value="{{ old('softskills', is_array($application->cvSubmission->softskills) ? implode(', ', $application->cvSubmission->softskills) : $application->cvSubmission->softskills) }}"
                                     placeholder="Contoh: Komunikasi, Teamwork, Problem Solving">
                                 <small class="form-text">
                                     Kemampuan interpersonal dan non-teknis
@@ -537,7 +585,7 @@
                             class="form-control" 
                             rows="5"
                             placeholder="Tuliskan surat pengantar singkat yang menjelaskan motivasi Anda melamar posisi ini..."
-                            maxlength="2000">{{ old('cover_letter', $application->cover_letter) }}</textarea>
+                            maxlength="2000">{{ old('cover_letter', $application->cvSubmission->cover_letter) }}</textarea>
                         <small class="form-text">
                             <i class="fas fa-info-circle"></i>
                             Jelaskan mengapa Anda tertarik dengan posisi ini dan apa yang membuat Anda kandidat yang tepat
@@ -548,15 +596,17 @@
                             Ekspektasi Gaji
                             <span class="text-muted">(Opsional)</span>
                         </label>
-                        <div class="input-group-icon">
-                            <i class="fas fa-money-bill-wave"></i>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-money-bill-wave"></i></div>
+                            </div>
                             <input 
                                 type="text" 
                                 name="expected_salary" 
                                 id="expected_salary" 
                                 class="form-control" 
                                 value="{{ old('expected_salary', $application->expected_salary) }}"
-                                placeholder="Contoh: Rp 10.000.000">
+                                placeholder="Contoh: 10.000.000">
                         </div>
                         <small class="form-text">
                             Masukkan range gaji yang Anda harapkan (nominal per bulan)

@@ -55,15 +55,6 @@ class JobApplicationController extends Controller
             [
                 'cv_submission_id' => $cvSubmission->id,
                 'status' => 'draft',
-                'pendidikan_terakhir' => $cvSubmission->pendidikan_terakhir,
-                'rangkuman_pendidikan' => $cvSubmission->rangkuman_pendidikan,
-                'ipk_nilai_akhir' => $cvSubmission->ipk_nilai_akhir,
-                'pengalaman_kerja_terakhir' => $cvSubmission->pengalaman_kerja_terakhir,
-                'rangkuman_pengalaman_kerja' => $cvSubmission->rangkuman_pengalaman_kerja,
-                'rangkuman_sertifikasi_prestasi' => $cvSubmission->rangkuman_sertifikasi_prestasi,
-                'rangkuman_profil' => $cvSubmission->rangkuman_profil,
-                'hardskills' => $cvSubmission->hardskills,
-                'softskills' => $cvSubmission->softskills,
             ]
         );
         
@@ -88,7 +79,7 @@ class JobApplicationController extends Controller
         $validatedData = $request->validate([
             'pendidikan_terakhir' => 'nullable|string|max:255',
             'rangkuman_pendidikan' => 'nullable|string',
-            'ipk_nilai_akhir' => 'nullable|string|max:10',
+            'ipk_nilai_akhir' => 'required|string|max:10',
             'pengalaman_kerja_terakhir' => 'nullable|string|max:255',
             'rangkuman_pengalaman_kerja' => 'nullable|string',
             'rangkuman_sertifikasi_prestasi' => 'nullable|string',
@@ -97,18 +88,27 @@ class JobApplicationController extends Controller
             'softskills' => 'nullable|string', 
             'cover_letter' => 'nullable|string',
             'expected_salary' => 'nullable|string|max:50',
+            'total_pengalaman_kerja' => 'required',
+            'tipe_pendidikan' => 'required'
         ]);
         
         $application = JobApplication::where('id', $applicationId)
             ->where('user_id', auth()->id())
             ->where('status', 'draft')
             ->firstOrFail();
-        
+        $validatedData['status'] = 'submitted';
         $validatedData['hardskills'] = $request->hardskills ? array_map('trim', explode(',', $request->hardskills)) : [];
         $validatedData['softskills'] = $request->softskills ? array_map('trim', explode(',', $request->softskills)) : [];
 
-        $application->update(array_merge($validatedData, ['status' => 'submitted']));
+        $application->update($validatedData);
         
+        $cv = CvSubmission::find($application->cv_submission_id);
+        $cv->update([
+            'ipk_nilai_akhir' => $validatedData['ipk_nilai_akhir'],
+            'total_pengalaman' => $validatedData['total_pengalaman_kerja'],
+            'tipe_pendidikan' => $validatedData['tipe_pendidikan']
+        ]);
+
         Log::info('JobApplication: Application submitted', [
             'application_id' => $application->id,
             'user_id' => auth()->id(),

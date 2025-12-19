@@ -48,4 +48,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function job()
+    {
+        return $this->hasMany(JobApplication::class, 'user_id');
+    }
+
+    public function cv()
+    {
+        return $this->hasOne(CvSubmission::class, 'user_id');
+    }
 }

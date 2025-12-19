@@ -7,17 +7,23 @@ use App\Models\JobOpening;
 use App\Models\CvSubmission;
 use App\Services\StorageService;
 use App\Jobs\ProcessCVSubmissionJob;
+use App\Models\JobApplication;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class LowonganKerjaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $job = JobOpening::where('status', 'open')->get();
+        $tipe = $request->tipe;
 
-        return view('kandidat.lowongan-kerja.index', compact('job'));
+        $job = JobOpening::where('status', 'open')
+        ->searchTipe($tipe)
+        ->get();
+
+        return view('kandidat.lowongan-kerja.index', compact('job', 'tipe'));
     }
 
     public function create($id)
@@ -34,8 +40,19 @@ class LowonganKerjaController extends Controller
     public function show($id)
     {
         $lowongan = JobOpening::find($id);
+        $cv       = CvSubmission::where('user_id', Auth::id())->first();
+        if ($cv) {
+            $exists = JobApplication::where('user_id', Auth::id())
+            ->where('cv_submission_id', $cv->id)
+            ->where('jobopening_id', $id)
+            ->where('status', 'submitted')
+            ->first();
+        }else{
+            $exists = false;
+        }
+        
 
-        return view('kandidat.lowongan-kerja.show', compact('lowongan'));
+        return view('kandidat.lowongan-kerja.show', compact('lowongan', 'exists'));
     }
 
     public function pelamar()
@@ -102,5 +119,12 @@ class LowonganKerjaController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Submission not found'], 404);
         }
+    }
+
+    public function detail($id)
+    {
+        $application = JobApplication::find($id);
+
+        return view('kandidat.lowongan-kerja.detail', compact('application'));
     }
 }

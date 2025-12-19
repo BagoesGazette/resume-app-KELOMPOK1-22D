@@ -15,15 +15,6 @@ class JobApplication extends Model
         'user_id',
         'cv_submission_id',
         'status',
-        'pendidikan_terakhir',
-        'rangkuman_pendidikan',
-        'ipk_nilai_akhir',
-        'pengalaman_kerja_terakhir',
-        'rangkuman_pengalaman_kerja',
-        'rangkuman_sertifikasi_prestasi',
-        'rangkuman_profil',
-        'hardskills',
-        'softskills',
         'cover_letter',
         'expected_salary',
         'reviewed_by',
@@ -44,16 +35,57 @@ class JobApplication extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function cvSubmission()
     {
-        return $this->belongsTo(CvSubmission::class);
+        return $this->belongsTo(CvSubmission::class, 'cv_submission_id');
     }
 
     public function reviewer()
     {
         return $this->belongsTo(User::class, 'reviewed_by');
     }
+
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            'draft'     => 'Draft',
+            'submitted' => 'Submitted',
+            'review'    => 'Review',
+            'interview' => 'Interview',
+            'accepted'  => 'Diterima',
+            'rejected'  => 'Ditolak',
+            default     => ucfirst($this->status),
+        };
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return match ($this->status) {
+            'draft'     => '#a0aec0',
+            'submitted' => '#667eea',
+            'review'    => '#11998e',
+            'interview' => '#f7971e',
+            'accepted'  => '#38a169',
+            'rejected'  => '#e53e3e',
+            default     => '#667eea',
+        };
+    }
+
+    public function getStatusIconAttribute()
+    {
+        return match ($this->status) {
+            'draft'     => 'fas fa-clock',
+            'submitted' => 'fas fa-check',
+            'review'    => 'fas fa-search',
+            'interview' => 'fas fa-calendar',
+            'accepted'  => 'fas fa-check',
+            'rejected'  => 'fas fa-times',
+            default     => 'fas fa-info-circle',
+        };
+    }
+
+
 }

@@ -7,3 +7,9 @@
 @isset($destroy)
     <a class="btn btn-danger text-white" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" onclick="Delete(this.id)" id="{{ $destroy }}"> <i class="fa fa-trash"></i></a>
 @endisset
+
+@isset($detail)
+    <a  href="{{ $detail }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Detail">
+        <i class="fa fa-info-circle"></i>
+    </a>
+@endisset

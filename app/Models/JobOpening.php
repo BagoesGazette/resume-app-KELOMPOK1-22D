@@ -35,4 +35,18 @@ class JobOpening extends Model
             ->locale('id')
             ->translatedFormat('d F Y');
     }
+
+    public function scopeSearchTipe($query, $tipe)
+    {
+        if (!empty($tipe)) {
+            return $query->where('tipe', 'like', "%$tipe%");
+        }
+        return $query;
+    }
+
+    public function apply()
+    {
+        return $this->hasMany(JobApplication::class, 'jobopening_id');
+    }
+
 }

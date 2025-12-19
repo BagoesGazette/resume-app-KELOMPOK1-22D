@@ -16,7 +16,7 @@ class JobController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = JobOpening::latest('id');
+            $data = JobOpening::with('apply')->latest('id');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('status', function ($row) {
@@ -26,13 +26,17 @@ class JobController extends Controller
                         return "<label class='badge badge-danger'>Tutup</label>";
                     }
                 })
+                ->addColumn('total_pelamar', function ($row) {
+                    return $row->apply->count();
+                })
                 ->addColumn('action', function ($row) {
                     $actions = [];
                     $actions['edit'] = route('job.edit', $row->id);
                     $actions['destroy'] = $row->id;
+                    $actions['detail'] = route('job.show', $row->id);
                     return view('layouts.button', $actions);
                 }) 
-                ->rawColumns(['action', 'status'])
+                ->rawColumns(['action', 'status', 'total_pelamar'])
                 ->make(true);
         }
         return view('job.index');
@@ -84,7 +88,10 @@ class JobController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $detail = JobOpening::find($id);
+
+        
+        return view('job.show', compact('detail'));
     }
 
     /**
@@ -145,6 +152,26 @@ class JobController extends Controller
             return response()->json(['status' => 'success']);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function close($id)
+    {
+        try {
+            $data =  JobOpening::find($id);
+            if ($data) {
+                $data->update([
+                    'status' => 'closed'
+                ]);
+            }
+
+            $notification = array(
+                'success'   => 'Berhasil menutup lowongan kerja '.$data->judul,
+            );
+
+            return redirect()->back()->with($notification);
+        } catch (\Throwable $e) {
+            return redirect()->back()->with(['error' => 'Data gagal! ' . $e->getMessage()]);
         }
     }
 }
