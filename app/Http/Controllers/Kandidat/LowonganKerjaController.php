@@ -8,6 +8,7 @@ use App\Models\CvSubmission;
 use App\Services\StorageService;
 use App\Jobs\ProcessCVSubmissionJob;
 use App\Models\JobApplication;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -45,7 +46,7 @@ class LowonganKerjaController extends Controller
             $exists = JobApplication::where('user_id', Auth::id())
             ->where('cv_submission_id', $cv->id)
             ->where('jobopening_id', $id)
-            ->where('status', 'submitted')
+            ->where('status', '!=', 'draft')
             ->first();
         }else{
             $exists = false;
@@ -123,8 +124,127 @@ class LowonganKerjaController extends Controller
 
     public function detail($id)
     {
-        $application = JobApplication::find($id);
+        $application = JobApplication::with([
+            'user',
+            'jobOpening',
+            'cvSubmission'
+        ])->where('user_id', Auth::id())
+          ->findOrFail($id);
 
-        return view('kandidat.lowongan-kerja.detail', compact('application'));
+        // Hitung total pelamar untuk lowongan yang sama
+        $totalApplicants = JobApplication::where('jobopening_id', $application->jobopening_id)->count();
+
+        // Hitung total skills
+        $hardskills = $application->cvSubmission->hardskills ?? [];
+        $softskills = $application->cvSubmission->softskills ?? [];
+        $totalSkills = (is_array($hardskills) ? count($hardskills) : 0) + 
+                       (is_array($softskills) ? count($softskills) : 0);
+
+        // Mapping tipe pendidikan
+        $pendidikanLabels = [
+            1 => 'SMA/SMK',
+            2 => 'D3 (Diploma)',
+            3 => 'S1 (Sarjana)',
+            4 => 'S2/S3 (Magister/Doktor)',
+        ];
+
+        // Build timeline
+        $timeline = $this->buildTimeline($application);
+
+        return view('kandidat.lowongan-kerja.detail', compact(
+            'application',
+            'totalApplicants',
+            'totalSkills',
+            'pendidikanLabels',
+            'timeline'
+        ));
+    }
+
+    /**
+     * Build application timeline
+     */
+    private function buildTimeline($application): array
+    {
+        $timeline = [];
+
+        // 1. Lamaran Dikirim
+        $timeline[] = [
+            'date' => $application->created_at->format('d M Y, H:i'),
+            'title' => 'Lamaran Dikirim',
+            'desc' => 'CV berhasil diupload dan lamaran terkirim',
+            'status' => 'completed',
+        ];
+
+        // 2. CV Diproses (setelah beberapa jam dari submit)
+        if (in_array($application->status, ['reviewed', 'interview', 'accepted', 'rejected'])) {
+            $timeline[] = [
+                'date' => $application->created_at->addHours(2)->format('d M Y, H:i'),
+                'title' => 'CV Diproses',
+                'desc' => 'CV telah dianalisis oleh sistem',
+                'status' => 'completed',
+            ];
+        } else {
+            $timeline[] = [
+                'date' => '-',
+                'title' => 'CV Diproses',
+                'desc' => 'CV sedang dianalisis oleh sistem',
+                'status' => $application->status == 'submitted' ? 'active' : 'pending',
+            ];
+        }
+
+        // 3. Dalam Review
+        if (in_array($application->status, ['reviewed', 'interview', 'accepted', 'rejected'])) {
+            $timeline[] = [
+                'date' => $application->updated_at->format('d M Y, H:i'),
+                'title' => 'Dalam Review',
+                'desc' => 'Tim HR telah mereview lamaran',
+                'status' => 'completed',
+            ];
+        } else {
+            $timeline[] = [
+                'date' => '-',
+                'title' => 'Dalam Review',
+                'desc' => 'Menunggu review dari tim HR',
+                'status' => 'pending',
+            ];
+        }
+
+        // 4. Interview
+        if (in_array($application->status, ['interview', 'accepted', 'rejected']) && $application->interview_date) {
+            $timeline[] = [
+                'date' => Carbon::parse($application->interview_date)
+                ->locale('id')
+                ->translatedFormat('d F Y H:i'),
+                'title' => 'Interview',
+                'desc' => ucfirst($application->interview_type ?? 'Online') . ' Interview',
+                'status' => $application->status == 'interview' ? 'active' : 'completed',
+            ];
+        } else {
+            $timeline[] = [
+                'date' => '-',
+                'title' => 'Interview',
+                'desc' => 'Menunggu jadwal interview',
+                'status' => $application->status == 'interview' ? 'active' : 'pending',
+            ];
+        }
+
+        // 5. Keputusan
+        if (in_array($application->status, ['accepted', 'rejected'])) {
+            $timeline[] = [
+                'date' => $application->updated_at->format('d M Y, H:i'),
+                'title' => 'Keputusan',
+                'desc' => $application->status == 'accepted' ? 'Selamat! Anda diterima' : 'Maaf, lamaran ditolak',
+                'status' => 'completed',
+            ];
+        } else {
+            $timeline[] = [
+                'date' => '-',
+                'title' => 'Keputusan',
+                'desc' => 'Menunggu hasil akhir',
+                'status' => 'pending',
+            ];
+        }
+
+        return $timeline;
     }
 }

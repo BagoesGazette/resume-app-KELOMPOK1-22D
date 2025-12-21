@@ -387,36 +387,40 @@
     color: #666;
 }
 
-/* Score Badge */
-.score-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border-radius: 10px;
+/* Score Progress Mini */
+.score-progress-mini {
+    width: 100%;
+    max-width: 120px;
+}
+
+.score-progress-mini .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}
+
+.score-progress-mini .progress-header .score-value {
     font-weight: 700;
-    font-size: 0.9rem;
+    color: #667eea;
 }
 
-.score-badge.excellent {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    color: #155724;
+.score-progress-mini .progress-bar-wrapper {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.score-badge.good {
-    background: linear-gradient(135deg, #cce5ff 0%, #b8daff 100%);
-    color: #004085;
+.score-progress-mini .progress-fill {
+    height: 100%;
+    border-radius: 10px;
 }
 
-.score-badge.average {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
-    color: #856404;
-}
-
-.score-badge.poor {
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-    color: #721c24;
-}
+.score-progress-mini .progress-fill.excellent { background: var(--success-gradient); }
+.score-progress-mini .progress-fill.good { background: var(--info-gradient); }
+.score-progress-mini .progress-fill.average { background: var(--warning-gradient); }
+.score-progress-mini .progress-fill.poor { background: var(--danger-gradient); }
 
 /* Status Badge */
 .status-badge {
@@ -508,41 +512,6 @@
     transform: translateY(-2px);
 }
 
-/* Score Progress Mini */
-.score-progress-mini {
-    width: 100%;
-    max-width: 120px;
-}
-
-.score-progress-mini .progress-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 0.85rem;
-}
-
-.score-progress-mini .progress-header .score-value {
-    font-weight: 700;
-    color: #667eea;
-}
-
-.score-progress-mini .progress-bar-wrapper {
-    height: 8px;
-    background: #e9ecef;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.score-progress-mini .progress-fill {
-    height: 100%;
-    border-radius: 10px;
-}
-
-.score-progress-mini .progress-fill.excellent { background: var(--success-gradient); }
-.score-progress-mini .progress-fill.good { background: var(--info-gradient); }
-.score-progress-mini .progress-fill.average { background: var(--warning-gradient); }
-.score-progress-mini .progress-fill.poor { background: var(--danger-gradient); }
-
 /* Empty State */
 .empty-state {
     text-align: center;
@@ -582,10 +551,12 @@
     gap: 8px;
     transition: all 0.3s ease;
     border: none;
+    text-decoration: none;
 }
 
 .btn-export:hover {
     transform: translateY(-2px);
+    text-decoration: none;
 }
 
 .btn-export.excel {
@@ -669,7 +640,7 @@
     <div class="section-header">
         <h1>Hasil Penilaian Lamaran</h1>
         <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+            <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
             <div class="breadcrumb-item">Hasil Penilaian</div>
         </div>
     </div>
@@ -682,15 +653,15 @@
                 <p>Lihat semua hasil penilaian dari lamaran kerja yang pernah Anda kirimkan beserta ranking dan skor CV Anda.</p>
                 <div class="header-stats">
                     <div class="header-stat">
-                        <div class="stat-number">{{ $totalLamaran ?? 12 }}</div>
+                        <div class="stat-number">{{ $totalLamaran }}</div>
                         <div class="stat-label">Total Lamaran</div>
                     </div>
                     <div class="header-stat">
-                        <div class="stat-number">{{ $avgScore ?? 82 }}%</div>
+                        <div class="stat-number">{{ $avgScore }}%</div>
                         <div class="stat-label">Rata-rata Skor</div>
                     </div>
                     <div class="header-stat">
-                        <div class="stat-number">{{ $bestRank ?? 2 }}</div>
+                        <div class="stat-number">{{ $bestRank }}</div>
                         <div class="stat-label">Ranking Terbaik</div>
                     </div>
                 </div>
@@ -705,7 +676,7 @@
                         <i class="fas fa-paper-plane"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">{{ $totalLamaran ?? 12 }}</div>
+                        <div class="stat-value">{{ $totalLamaran }}</div>
                         <div class="stat-label">Total Lamaran</div>
                     </div>
                 </div>
@@ -716,7 +687,7 @@
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">{{ $pendingCount ?? 4 }}</div>
+                        <div class="stat-value">{{ $pendingCount }}</div>
                         <div class="stat-label">Dalam Proses</div>
                     </div>
                 </div>
@@ -727,7 +698,7 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">{{ $acceptedCount ?? 2 }}</div>
+                        <div class="stat-value">{{ $acceptedCount }}</div>
                         <div class="stat-label">Diterima</div>
                     </div>
                 </div>
@@ -738,7 +709,7 @@
                         <i class="fas fa-times-circle"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">{{ $rejectedCount ?? 3 }}</div>
+                        <div class="stat-value">{{ $rejectedCount }}</div>
                         <div class="stat-label">Ditolak</div>
                     </div>
                 </div>
@@ -749,16 +720,19 @@
         <div class="table-card">
             <div class="card-header">
                 <h4><i class="fas fa-list-alt"></i> Daftar Hasil Penilaian</h4>
+                @if($results->count() > 0)
                 <div class="export-buttons">
-                    <button class="btn-export excel" id="exportExcel">
+                    <a href="{{ route('kandidat.hasil.export.excel') }}" class="btn-export excel">
                         <i class="fas fa-file-excel"></i> Export Excel
-                    </button>
-                    <button class="btn-export pdf" id="exportPdf">
+                    </a>
+                    <a href="{{ route('kandidat.hasil.export.pdf') }}" class="btn-export pdf" target="_blank">
                         <i class="fas fa-file-pdf"></i> Export PDF
-                    </button>
+                    </a>
                 </div>
+                @endif
             </div>
             <div class="card-body">
+                @if($results->count() > 0)
                 <!-- Filter Section -->
                 <div class="filter-section">
                     <div class="filter-group">
@@ -776,31 +750,19 @@
                         <label>Kategori</label>
                         <select id="filterCategory">
                             <option value="">Semua Kategori</option>
-                            <option value="IT & Software">IT & Software</option>
-                            <option value="Design">Design</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Finance">Finance</option>
-                            <option value="HR">Human Resources</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Periode</label>
-                        <select id="filterPeriod">
-                            <option value="">Semua Waktu</option>
-                            <option value="7">7 Hari Terakhir</option>
-                            <option value="30">30 Hari Terakhir</option>
-                            <option value="90">3 Bulan Terakhir</option>
-                            <option value="365">1 Tahun Terakhir</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category }}">{{ $category }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="filter-group">
                         <label>Skor</label>
                         <select id="filterScore">
                             <option value="">Semua Skor</option>
-                            <option value="90-100">Excellent (90-100)</option>
-                            <option value="80-89">Good (80-89)</option>
-                            <option value="70-79">Average (70-79)</option>
-                            <option value="0-69">Below Average (<70)</option>
+                            <option value="excellent">Excellent (90-100)</option>
+                            <option value="good">Good (80-89)</option>
+                            <option value="average">Average (70-79)</option>
+                            <option value="poor">Below Average (&lt;70)</option>
                         </select>
                     </div>
                 </div>
@@ -821,165 +783,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $results = [
-                                    [
-                                        'id' => 1,
-                                        'position' => 'Senior Frontend Developer',
-                                        'company' => 'PT. Teknologi Nusantara',
-                                        'color' => '#667eea',
-                                        'date' => '2025-12-05',
-                                        'score' => 85,
-                                        'rank' => 3,
-                                        'total_applicants' => 48,
-                                        'status' => 'review',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 2,
-                                        'position' => 'UI/UX Designer',
-                                        'company' => 'PT. Digital Creative',
-                                        'color' => '#11998e',
-                                        'date' => '2025-12-01',
-                                        'score' => 92,
-                                        'rank' => 2,
-                                        'total_applicants' => 35,
-                                        'status' => 'interview',
-                                        'category' => 'Design'
-                                    ],
-                                    [
-                                        'id' => 3,
-                                        'position' => 'Full Stack Developer',
-                                        'company' => 'PT. Startup Maju',
-                                        'color' => '#f7971e',
-                                        'date' => '2025-11-28',
-                                        'score' => 78,
-                                        'rank' => 8,
-                                        'total_applicants' => 52,
-                                        'status' => 'rejected',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 4,
-                                        'position' => 'Backend Developer',
-                                        'company' => 'PT. Tech Solutions',
-                                        'color' => '#eb3349',
-                                        'date' => '2025-11-25',
-                                        'score' => 95,
-                                        'rank' => 1,
-                                        'total_applicants' => 40,
-                                        'status' => 'accepted',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 5,
-                                        'position' => 'Product Designer',
-                                        'company' => 'PT. Innovation Hub',
-                                        'color' => '#00c6fb',
-                                        'date' => '2025-11-20',
-                                        'score' => 88,
-                                        'rank' => 4,
-                                        'total_applicants' => 28,
-                                        'status' => 'interview',
-                                        'category' => 'Design'
-                                    ],
-                                    [
-                                        'id' => 6,
-                                        'position' => 'Software Engineer',
-                                        'company' => 'PT. Global Tech',
-                                        'color' => '#a855f7',
-                                        'date' => '2025-11-15',
-                                        'score' => 72,
-                                        'rank' => 15,
-                                        'total_applicants' => 65,
-                                        'status' => 'rejected',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 7,
-                                        'position' => 'Mobile Developer',
-                                        'company' => 'PT. App Indonesia',
-                                        'color' => '#667eea',
-                                        'date' => '2025-11-10',
-                                        'score' => 82,
-                                        'rank' => 5,
-                                        'total_applicants' => 30,
-                                        'status' => 'pending',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 8,
-                                        'position' => 'Data Analyst',
-                                        'company' => 'PT. Data Solutions',
-                                        'color' => '#11998e',
-                                        'date' => '2025-11-05',
-                                        'score' => 90,
-                                        'rank' => 2,
-                                        'total_applicants' => 22,
-                                        'status' => 'accepted',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 9,
-                                        'position' => 'DevOps Engineer',
-                                        'company' => 'PT. Cloud Indonesia',
-                                        'color' => '#f7971e',
-                                        'date' => '2025-10-28',
-                                        'score' => 68,
-                                        'rank' => 20,
-                                        'total_applicants' => 45,
-                                        'status' => 'rejected',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 10,
-                                        'position' => 'QA Engineer',
-                                        'company' => 'PT. Quality Tech',
-                                        'color' => '#eb3349',
-                                        'date' => '2025-10-20',
-                                        'score' => 85,
-                                        'rank' => 3,
-                                        'total_applicants' => 18,
-                                        'status' => 'review',
-                                        'category' => 'IT & Software'
-                                    ],
-                                    [
-                                        'id' => 11,
-                                        'position' => 'Graphic Designer',
-                                        'company' => 'PT. Creative Studio',
-                                        'color' => '#00c6fb',
-                                        'date' => '2025-10-15',
-                                        'score' => 76,
-                                        'rank' => 7,
-                                        'total_applicants' => 25,
-                                        'status' => 'pending',
-                                        'category' => 'Design'
-                                    ],
-                                    [
-                                        'id' => 12,
-                                        'position' => 'System Analyst',
-                                        'company' => 'PT. Enterprise Solutions',
-                                        'color' => '#a855f7',
-                                        'date' => '2025-10-10',
-                                        'score' => 88,
-                                        'rank' => 4,
-                                        'total_applicants' => 32,
-                                        'status' => 'pending',
-                                        'category' => 'IT & Software'
-                                    ],
-                                ];
-                            @endphp
-
                             @foreach($results as $index => $result)
-                            <tr data-status="{{ $result['status'] }}" data-category="{{ $result['category'] }}" data-score="{{ $result['score'] }}">
+                            @php
+                                $scoreClass = 'poor';
+                                if ($result['score'] >= 90) $scoreClass = 'excellent';
+                                elseif ($result['score'] >= 80) $scoreClass = 'good';
+                                elseif ($result['score'] >= 70) $scoreClass = 'average';
+
+                                $rankClass = 'rank-normal';
+                                if ($result['rank'] == 1) $rankClass = 'rank-1';
+                                elseif ($result['rank'] == 2) $rankClass = 'rank-2';
+                                elseif ($result['rank'] == 3) $rankClass = 'rank-3';
+                            @endphp
+                            <tr data-status="{{ $result['status'] }}" 
+                                data-category="{{ $result['category'] }}" 
+                                data-score="{{ $scoreClass }}">
                                 <td>{{ $index + 1 }}</td>
                                 <td>
                                     <div class="job-info-cell">
                                         <div class="job-logo" style="background: {{ $result['color'] }};">
-                                            {{ strtoupper(substr($result['company'], 4, 2)) }}
+                                            {{ strtoupper(substr($result['company'], 0, 2)) }}
                                         </div>
                                         <div class="job-details">
-                                            <h6>{{ $result['position'] }}</h6>
+                                            <h6>{{ Str::limit($result['position'], 25) }}</h6>
                                             <small><i class="fas fa-building mr-1"></i> {{ $result['company'] }}</small>
                                         </div>
                                     </div>
@@ -987,26 +813,31 @@
                                 <td>
                                     <span class="text-muted">
                                         <i class="fas fa-calendar mr-1"></i>
-                                        {{ \Carbon\Carbon::parse($result['date'])->format('d M Y') }}
+                                        {{ $result['date']->format('d M Y') }}
                                     </span>
                                 </td>
                                 <td>
+                                    @if($result['score'])
                                     <div class="score-progress-mini">
                                         <div class="progress-header">
                                             <span class="score-value">{{ $result['score'] }}%</span>
                                         </div>
                                         <div class="progress-bar-wrapper">
-                                            @php
-                                                $scoreClass = $result['score'] >= 90 ? 'excellent' : ($result['score'] >= 80 ? 'good' : ($result['score'] >= 70 ? 'average' : 'poor'));
-                                            @endphp
                                             <div class="progress-fill {{ $scoreClass }}" style="width: {{ $result['score'] }}%;"></div>
                                         </div>
                                     </div>
+                                    @else
+                                    <span class="text-muted">Belum dinilai</span>
+                                    @endif
                                 </td>
                                 <td>
-                                    <div class="rank-badge {{ $result['rank'] == 1 ? 'rank-1' : ($result['rank'] == 2 ? 'rank-2' : ($result['rank'] == 3 ? 'rank-3' : 'rank-normal')) }}">
+                                    @if($result['rank'])
+                                    <div class="rank-badge {{ $rankClass }}">
                                         #{{ $result['rank'] }}
                                     </div>
+                                    @else
+                                    <span class="text-muted">-</span>
+                                    @endif
                                 </td>
                                 <td>
                                     <span class="text-muted">
@@ -1030,14 +861,17 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="" class="btn-action view" data-toggle="tooltip" title="Lihat Detail">
+                                        <a href="{{ route('lowongan-kerja.show', $result['job_id']) }}" 
+                                           class="btn-action view" 
+                                           data-toggle="tooltip" 
+                                           title="Lihat Detail Lowongan">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="" class="btn-action ranking" data-toggle="tooltip" title="Lihat Ranking">
-                                            <i class="fas fa-trophy"></i>
-                                        </a>
-                                        @if($result['status'] == 'pending')
-                                        <button class="btn-action delete" data-toggle="tooltip" title="Batalkan Lamaran" onclick="cancelApplication({{ $result['id'] }})">
+                                        @if($result['status_raw'] == 'submitted')
+                                        <button class="btn-action delete" 
+                                                data-toggle="tooltip" 
+                                                title="Batalkan Lamaran" 
+                                                onclick="cancelApplication({{ $result['id'] }})">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                         @endif
@@ -1048,9 +882,21 @@
                         </tbody>
                     </table>
                 </div>
+                @else
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <i class="fas fa-file-alt"></i>
+                    <h4>Belum Ada Lamaran</h4>
+                    <p>Anda belum melamar pekerjaan apapun. Mulai cari lowongan yang sesuai dengan keahlian Anda.</p>
+                    <a href="{{ route('lowongan-kerja.index') }}" class="btn btn-primary">
+                        <i class="fas fa-search mr-2"></i> Cari Lowongan
+                    </a>
+                </div>
+                @endif
             </div>
         </div>
 
+        @if($results->count() > 0)
         <!-- Legend -->
         <div class="row">
             <div class="col-12">
@@ -1077,6 +923,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </section>
 @endsection
@@ -1088,15 +935,9 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
 
-<!-- Export Libraries -->
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-
 <script>
 $(document).ready(function() {
+    @if($results->count() > 0)
     // Initialize DataTable
     var table = $('#resultsTable').DataTable({
         responsive: true,
@@ -1116,116 +957,36 @@ $(document).ready(function() {
                 previous: "<i class='fas fa-chevron-left'></i>"
             }
         },
-        order: [[2, 'desc']], // Sort by date descending
+        order: [[2, 'desc']],
         columnDefs: [
-            { orderable: false, targets: [7] } // Disable sorting on action column
-        ],
-        dom: '<"top"lf>rt<"bottom"ip><"clear">',
-        buttons: [
-            {
-                extend: 'excel',
-                text: '<i class="fas fa-file-excel"></i> Excel',
-                className: 'btn-export excel',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6]
-                }
-            },
-            {
-                extend: 'pdf',
-                text: '<i class="fas fa-file-pdf"></i> PDF',
-                className: 'btn-export pdf',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6]
-                }
-            }
+            { orderable: false, targets: [7] }
         ]
     });
 
     // Initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
-    // Filter by status
-    $('#filterStatus').on('change', function() {
-        var status = $(this).val();
-        if (status) {
-            table.column(6).search(status).draw();
-        } else {
-            table.column(6).search('').draw();
-        }
+    // Custom filter function for status
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        var status = $('#filterStatus').val();
+        var category = $('#filterCategory').val();
+        var score = $('#filterScore').val();
+        
+        var row = table.row(dataIndex).node();
+        var rowStatus = $(row).data('status');
+        var rowCategory = $(row).data('category');
+        var rowScore = $(row).data('score');
+
+        var statusMatch = !status || rowStatus === status;
+        var categoryMatch = !category || rowCategory === category;
+        var scoreMatch = !score || rowScore === score;
+
+        return statusMatch && categoryMatch && scoreMatch;
     });
 
-    // Filter by category
-    $('#filterCategory').on('change', function() {
-        var category = $(this).val();
-        if (category) {
-            table.column(1).search(category).draw();
-        } else {
-            table.column(1).search('').draw();
-        }
-    });
-
-    // Filter by period
-    $('#filterPeriod').on('change', function() {
-        var days = $(this).val();
-        // Custom filtering logic for period would go here
-        // For now, just redraw the table
+    // Filter events
+    $('#filterStatus, #filterCategory, #filterScore').on('change', function() {
         table.draw();
-    });
-
-    // Filter by score
-    $('#filterScore').on('change', function() {
-        var scoreRange = $(this).val();
-        // Custom filtering logic for score range would go here
-        table.draw();
-    });
-
-    // Export Excel button
-    $('#exportExcel').on('click', function() {
-        // Using DataTable export
-        Swal.fire({
-            title: 'Export Excel',
-            text: 'Data akan diexport ke file Excel',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Export',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#28a745'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Trigger export
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'File Excel berhasil diunduh',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        });
-    });
-
-    // Export PDF button
-    $('#exportPdf').on('click', function() {
-        Swal.fire({
-            title: 'Export PDF',
-            text: 'Data akan diexport ke file PDF',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Export',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#dc3545'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Trigger export
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'File PDF berhasil diunduh',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        });
     });
 
     // Animate progress bars
@@ -1235,6 +996,7 @@ $(document).ready(function() {
             $(this).css('width', '0').animate({width: width}, 800);
         });
     }, 300);
+    @endif
 });
 
 // Cancel Application Function
@@ -1250,15 +1012,30 @@ function cancelApplication(id) {
         cancelButtonText: 'Tidak'
     }).then((result) => {
         if (result.isConfirmed) {
-            // AJAX call to cancel application would go here
-            Swal.fire({
-                title: 'Berhasil!',
-                text: 'Lamaran telah dibatalkan.',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
+            $.ajax({
+                url: '/kandidat/hasil/' + id + '/cancel',
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: response.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat membatalkan lamaran.',
+                        icon: 'error'
+                    });
+                }
             });
         }
     });

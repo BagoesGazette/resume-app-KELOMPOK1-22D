@@ -36,6 +36,17 @@ class JobOpening extends Model
             ->translatedFormat('d F Y');
     }
 
+    public function getTanggalBuatIndoAttribute()
+    {
+        if (!$this->created_at) {
+            return null;
+        }
+
+        return Carbon::parse($this->created_at)
+            ->locale('id')
+            ->translatedFormat('d F Y');
+    }
+
     public function scopeSearchTipe($query, $tipe)
     {
         if (!empty($tipe)) {

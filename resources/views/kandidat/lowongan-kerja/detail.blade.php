@@ -72,6 +72,13 @@
     color: #667eea;
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.applicant-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .applicant-info h2 {
@@ -143,12 +150,12 @@
     gap: 10px;
 }
 
-.status-badge-large.pending {
+.status-badge-large.submitted {
     background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
     color: #856404;
 }
 
-.status-badge-large.review {
+.status-badge-large.reviewed {
     background: linear-gradient(135deg, #cce5ff 0%, #9ec5fe 100%);
     color: #004085;
 }
@@ -260,57 +267,6 @@
     font-size: 0.95rem;
 }
 
-/* Info Items */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-.info-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-.info-item:hover {
-    background: #f0f0ff;
-    transform: translateX(5px);
-}
-
-.info-item .item-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-    background: linear-gradient(135deg, #f0f0ff 0%, #e8e8ff 100%);
-    color: #667eea;
-}
-
-.info-item .item-content {
-    flex: 1;
-}
-
-.info-item .item-label {
-    font-size: 0.8rem;
-    color: #6c757d;
-    margin-bottom: 3px;
-}
-
-.info-item .item-value {
-    font-weight: 600;
-    color: #34395e;
-    font-size: 0.95rem;
-}
-
 /* Education Card */
 .education-card {
     background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
@@ -356,6 +312,7 @@
     margin-top: 15px;
     padding-top: 15px;
     border-top: 2px dashed #9ae6b4;
+    flex-wrap: wrap;
 }
 
 .education-card .detail-item {
@@ -425,6 +382,7 @@
     margin-top: 15px;
     padding-top: 15px;
     border-top: 2px dashed #feb2b2;
+    flex-wrap: wrap;
 }
 
 .experience-card .stat-box {
@@ -567,7 +525,7 @@
 }
 
 .salary-card .salary-amount {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 800;
 }
 
@@ -591,24 +549,6 @@
     justify-content: center;
 }
 
-.score-circle::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: conic-gradient(#667eea 0% 85%, #e9ecef 85% 100%);
-}
-
-.score-circle::after {
-    content: '';
-    position: absolute;
-    width: 110px;
-    height: 110px;
-    background: white;
-    border-radius: 50%;
-}
-
 .score-value {
     position: relative;
     z-index: 1;
@@ -625,8 +565,51 @@
 
 .score-status {
     font-weight: 700;
-    color: #28a745;
     font-size: 1.1rem;
+}
+
+.score-status.excellent { color: #28a745; }
+.score-status.good { color: #17a2b8; }
+.score-status.average { color: #ffc107; }
+.score-status.poor { color: #dc3545; }
+
+/* Ranking Badge */
+.ranking-card {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    border: 2px solid #fcd34d;
+}
+
+.ranking-card .ranking-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--warning-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.ranking-card .ranking-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #92400e;
+}
+
+.ranking-card .ranking-label {
+    font-size: 0.9rem;
+    color: #78350f;
+}
+
+.ranking-card .ranking-total {
+    font-size: 0.85rem;
+    color: #a16207;
+    margin-top: 5px;
 }
 
 /* Application Timeline */
@@ -664,7 +647,7 @@
     height: 14px;
     border-radius: 50%;
     background: white;
-    border: 4px solid #667eea;
+    border: 4px solid #e0e0e0;
 }
 
 .timeline-item.completed::before {
@@ -695,205 +678,53 @@
     color: #6c757d;
 }
 
-/* Action Buttons */
-.action-card {
-    background: white;
+/* Interview Info Card */
+.interview-info-card {
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
     border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    padding: 20px;
+    border: 2px solid #a5b4fc;
+    margin-bottom: 20px;
 }
 
-.action-card h5 {
+.interview-info-card h6 {
+    color: #3730a3;
     font-weight: 700;
-    color: #34395e;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.interview-info-card .info-row {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #4338ca;
 }
 
-.action-card h5 i {
-    color: #667eea;
+.interview-info-card .info-row i {
+    width: 20px;
+    text-align: center;
 }
 
-.action-btn {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: inherit;
-    border: 2px solid transparent;
-}
-
-.action-btn:last-child {
+.interview-info-card .info-row:last-child {
     margin-bottom: 0;
 }
 
-.action-btn:hover {
-    text-decoration: none;
-    color: inherit;
-}
-
-.action-btn .action-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    color: white;
-}
-
-.action-btn .action-text h6 {
-    margin: 0;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.action-btn .action-text small {
-    color: #6c757d;
-}
-
-.action-btn.accept {
-    background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
-    border-color: #9ae6b4;
-}
-
-.action-btn.accept:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 20px rgba(40, 167, 69, 0.2);
-}
-
-.action-btn.accept .action-icon {
-    background: var(--success-gradient);
-}
-
-.action-btn.reject {
-    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-    border-color: #feb2b2;
-}
-
-.action-btn.reject:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 20px rgba(220, 53, 69, 0.2);
-}
-
-.action-btn.reject .action-icon {
-    background: var(--danger-gradient);
-}
-
-.action-btn.interview {
-    background: linear-gradient(135deg, #f0f0ff 0%, #e8e8ff 100%);
-    border-color: #c4b5fd;
-}
-
-.action-btn.interview:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2);
-}
-
-.action-btn.interview .action-icon {
-    background: var(--purple-gradient);
-}
-
-.action-btn.download {
-    background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
-    border-color: #67e8f9;
-}
-
-.action-btn.download:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 20px rgba(6, 182, 212, 0.2);
-}
-
-.action-btn.download .action-icon {
-    background: var(--info-gradient);
-}
-
-/* Documents */
-.document-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    transition: all 0.3s ease;
-}
-
-.document-item:hover {
-    background: #f0f0ff;
-    transform: translateX(5px);
-}
-
-.document-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-}
-
-.document-icon.pdf {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    color: #dc2626;
-}
-
-.document-info {
-    flex: 1;
-}
-
-.document-info h6 {
-    margin: 0 0 3px 0;
-    font-weight: 600;
-    color: #34395e;
-}
-
-.document-info small {
-    color: #6c757d;
-}
-
-.document-actions a {
-    color: #667eea;
-    font-size: 1.1rem;
-    margin-left: 10px;
-    transition: all 0.2s ease;
-}
-
-.document-actions a:hover {
-    color: #764ba2;
-}
-
-/* Notes Section */
-.notes-section {
-    background: #f8f9fa;
-    border-radius: 12px;
+/* Empty State */
+.empty-state-mini {
+    text-align: center;
     padding: 20px;
+    color: #6c757d;
 }
 
-.notes-section textarea {
-    width: 100%;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 0.9rem;
-    resize: vertical;
-    min-height: 100px;
-    transition: all 0.3s ease;
-}
-
-.notes-section textarea:focus {
-    border-color: #667eea;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+.empty-state-mini i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    opacity: 0.5;
 }
 
 /* Responsive */
@@ -959,13 +790,12 @@
 <section class="section">
     <div class="section-header">
         <div class="section-header-back">
-            <a href="{{ route('lowongan-kerja.show', $application->jobopening_id) }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+            <a href="{{ route('hasil.index') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
         </div>
-        <h1>Detail Pelamar</h1>
+        <h1>Detail Lamaran</h1>
         <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-            <div class="breadcrumb-item"><a href="#">Lowongan Kerja</a></div>
-            <div class="breadcrumb-item"><a href="#">Pelamar</a></div>
+            <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
+            <div class="breadcrumb-item"><a href="{{ route('hasil.index') }}">Hasil Penilaian</a></div>
             <div class="breadcrumb-item">Detail</div>
         </div>
     </div>
@@ -975,22 +805,29 @@
         <div class="applicant-header-card">
             <div class="applicant-header">
                 <div class="header-actions">
-                    <button class="btn btn-light" onclick="window.print()">
-                        <i class="fas fa-print mr-1"></i> Cetak
-                    </button>
+                    <a href="{{ route('lowongan-kerja.show', $application->jobopening_id) }}" class="btn btn-light">
+                        <i class="fas fa-briefcase mr-1"></i> Lihat Lowongan
+                    </a>
                 </div>
                 
                 <div class="applicant-profile">
                     <div class="applicant-avatar">
-                        {{ strtoupper(substr($application->user->name ?? '', 0, 2)) }}
+                        @if($application->user->photo)
+                            <img src="{{ asset('storage/' . $application->user->photo) }}" alt="Avatar">
+                        @else
+                            {{ strtoupper(substr($application->user->name ?? 'U', 0, 2)) }}
+                        @endif
                     </div>
                     <div class="applicant-info">
-                        <h2>{{ $application->user->name ?? '' }}</h2>
-                        <p class="email"><i class="fas fa-envelope mr-2"></i> {{ $application->user->email ?? '' }}</p>
+                        <h2>{{ $application->user->name ?? 'Nama tidak tersedia' }}</h2>
+                        <p class="email"><i class="fas fa-envelope mr-2"></i> {{ $application->user->email ?? '-' }}</p>
+                        @if($application->user->phone)
+                        <p class="phone"><i class="fas fa-phone mr-2"></i> {{ $application->user->phone }}</p>
+                        @endif
                         <div class="applicant-meta">
                             <span class="meta-badge">
                                 <i class="fas fa-briefcase"></i>
-                                {{ $application->jobOpening->judul ?? '-' }}
+                                {{ $application->jobOpening->judul ?? 'Posisi tidak tersedia' }}
                             </span>
                             <span class="meta-badge">
                                 <i class="fas fa-building"></i>
@@ -998,11 +835,7 @@
                             </span>
                             <span class="meta-badge">
                                 <i class="fas fa-calendar"></i>
-                                Melamar: {{ $application->created_at
-                                    ->timezone('Asia/Jakarta')
-                                    ->locale('id')
-                                    ->translatedFormat('d M Y')
-                                }}
+                                Dilamar: {{ $application->created_at->locale('id')->translatedFormat('d M Y') }}
                             </span>
                         </div>
                     </div>
@@ -1012,36 +845,38 @@
             <!-- Quick Stats Bar -->
             <div class="quick-stats-bar">
                 <div class="quick-stat">
-                    <div class="stat-value">{{ $application->cvSubmission->total_pengalaman ?? '0' }}</div>
+                    <div class="stat-value">{{ $application->cvSubmission->total_pengalaman ?? 0 }}</div>
                     <div class="stat-label">Tahun Pengalaman</div>
                 </div>
                 <div class="quick-stat">
-                    <div class="stat-value">{{ $application->cvSubmission->ipk_nilai_akhir ?? '0' }}</div>
-                    <div class="stat-label">IPK</div>
+                    <div class="stat-value">{{ $application->cvSubmission->ipk_nilai_akhir ?? '-' }}</div>
+                    <div class="stat-label">IPK/Nilai</div>
                 </div>
                 <div class="quick-stat">
-                    @php
-                        $hardskills = $application->cvSubmission->hardskills ?? ['PHP', 'Laravel', 'JavaScript', 'React', 'MySQL'];
-                        $softskills = $application->cvSubmission->softskills ?? ['Komunikasi', 'Teamwork', 'Problem Solving'];
-                        $totalSkills = (is_array($hardskills) ? count($hardskills) : count(explode(',', $hardskills))) + (is_array($softskills) ? count($softskills) : count(explode(',', $softskills)));
-                    @endphp
                     <div class="stat-value">{{ $totalSkills }}</div>
                     <div class="stat-label">Total Skills</div>
                 </div>
                 <div class="quick-stat">
-                    <div class="stat-value status-badge-large {{ $application->status ?? 'review' }}">
-                        @php $status = $application->status ?? 'review'; @endphp
-                        @if($status == 'pending')
-                            <i class="fas fa-clock"></i> Pending
-                        @elseif($status == 'review')
-                            <i class="fas fa-search"></i> Review
-                        @elseif($status == 'interview')
-                            <i class="fas fa-calendar-check"></i> Interview
-                        @elseif($status == 'accepted')
-                            <i class="fas fa-check-circle"></i> Diterima
-                        @elseif($status == 'rejected')
-                            <i class="fas fa-times-circle"></i> Ditolak
-                        @endif
+                    <div class="stat-value status-badge-large {{ $application->status }}">
+                        @switch($application->status)
+                            @case('submitted')
+                                <i class="fas fa-clock"></i> Pending
+                                @break
+                            @case('reviewed')
+                                <i class="fas fa-search"></i> Review
+                                @break
+                            @case('interview')
+                                <i class="fas fa-calendar-check"></i> Interview
+                                @break
+                            @case('accepted')
+                                <i class="fas fa-check-circle"></i> Diterima
+                                @break
+                            @case('rejected')
+                                <i class="fas fa-times-circle"></i> Ditolak
+                                @break
+                            @default
+                                <i class="fas fa-clock"></i> {{ ucfirst($application->status) }}
+                        @endswitch
                     </div>
                 </div>
             </div>
@@ -1051,16 +886,18 @@
             <!-- Main Content -->
             <div class="col-lg-8">
                 <!-- Profile Summary -->
+                @if($application->cvSubmission->rangkuman_profil)
                 <div class="info-card">
                     <div class="card-header">
                         <h4><i class="fas fa-user-tie bg-primary"></i> Rangkuman Profil</h4>
                     </div>
                     <div class="card-body">
                         <div class="profile-summary">
-                            {{ $application->cvSubmission->rangkuman_profil ?? 'Saya adalah profesional IT dengan pengalaman lebih dari 4 tahun di bidang web development. Memiliki keahlian dalam pengembangan aplikasi web menggunakan Laravel dan React.js. Berpengalaman memimpin tim developer dan mengelola proyek dari awal hingga deployment. Passionate dalam teknologi baru dan selalu berusaha meningkatkan kemampuan teknis serta soft skills.' }}
+                            {{ $application->cvSubmission->rangkuman_profil }}
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <!-- Education -->
                 <div class="info-card">
@@ -1074,29 +911,26 @@
                                     <i class="fas fa-graduation-cap"></i>
                                 </div>
                                 <div class="degree-info">
-                                    <h5>{{ $application->cvSubmission->pendidikan_terakhir ?? 'S1 Teknik Informatika - Universitas Indonesia' }}</h5>
-                                    <p>
-                                        @php
-                                            $tipePendidikan = [1 => 'Diploma (D3)', 2 => 'Sarjana (S1)', 3 => 'Magister (S2)', 4 => 'Doktor (S3)'];
-                                        @endphp
-                                        {{ $tipePendidikan[$application->cvSubmission->tipe_pendidikan ?? 2] }}
-                                    </p>
+                                    <h5>{{ $application->cvSubmission->pendidikan_terakhir ?? 'Pendidikan tidak tersedia' }}</h5>
+                                    <p>{{ $pendidikanLabels[$application->cvSubmission->tipe_pendidikan ?? 3] ?? 'S1 (Sarjana)' }}</p>
                                 </div>
                             </div>
                             <div class="education-details">
                                 <div class="detail-item">
                                     <i class="fas fa-star"></i>
-                                    <span>IPK: <strong>{{ $application->cvSubmission->ipk_nilai_akhir ?? '3.75' }}</strong></span>
+                                    <span>IPK/Nilai: <strong>{{ $application->cvSubmission->ipk_nilai_akhir ?? '-' }}</strong></span>
                                 </div>
+                                @if($application->cvSubmission->tahun_lulus)
                                 <div class="detail-item">
-                                    <i class="fas fa-award"></i>
-                                    <span>Lulus dengan Predikat Cumlaude</span>
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Tahun Lulus: <strong>{{ $application->cvSubmission->tahun_lulus }}</strong></span>
                                 </div>
+                                @endif
                             </div>
-                            @if($application->cvSubmission->rangkuman_pendidikan ?? true)
+                            @if($application->cvSubmission->rangkuman_pendidikan)
                             <div class="education-summary">
                                 <strong><i class="fas fa-info-circle mr-1"></i> Rangkuman:</strong><br>
-                                {{ $application->cvSubmission->rangkuman_pendidikan ?? 'Lulus dengan predikat cum laude. Aktif dalam organisasi kampus sebagai Ketua Himpunan Mahasiswa Informatika. Mengikuti berbagai kompetisi programming tingkat nasional dan meraih juara 2 pada lomba hackathon tahun 2020.' }}
+                                {{ $application->cvSubmission->rangkuman_pendidikan }}
                             </div>
                             @endif
                         </div>
@@ -1115,20 +949,20 @@
                                     <i class="fas fa-building"></i>
                                 </div>
                                 <div class="exp-info">
-                                    <h5>{{ $application->cvSubmission->pengalaman_kerja_terakhir ?? 'Senior Web Developer di PT. Tech Indonesia (2020-2024)' }}</h5>
+                                    <h5>{{ $application->cvSubmission->pengalaman_kerja_terakhir ?? 'Belum ada pengalaman kerja' }}</h5>
                                     <p>Pengalaman Kerja Terakhir</p>
                                 </div>
                             </div>
                             <div class="experience-stats">
                                 <div class="stat-box">
-                                    <div class="number">{{ $application->cvSubmission->total_pengalaman_kerja ?? '4' }}</div>
+                                    <div class="number">{{ $application->cvSubmission->total_pengalaman ?? 0 }}</div>
                                     <div class="label">Tahun Pengalaman</div>
                                 </div>
                             </div>
-                            @if($application->cvSubmission->rangkuman_pengalaman_kerja ?? true)
+                            @if($application->cvSubmission->rangkuman_pengalaman_kerja)
                             <div class="experience-summary">
                                 <strong><i class="fas fa-info-circle mr-1"></i> Rangkuman:</strong><br>
-                                {{ $application->cvSubmission->rangkuman_pengalaman_kerja ?? 'Bertanggung jawab dalam pengembangan aplikasi web menggunakan Laravel dan React.js. Mengelola tim developer yang terdiri dari 5 orang. Berhasil meningkatkan performa aplikasi hingga 40%. Mengimplementasikan CI/CD pipeline dan best practices dalam pengembangan software.' }}
+                                {{ $application->cvSubmission->rangkuman_pengalaman_kerja }}
                             </div>
                             @endif
                         </div>
@@ -1136,6 +970,12 @@
                 </div>
 
                 <!-- Skills -->
+                @php
+                    $hardskills = $application->cvSubmission->hardskills ?? [];
+                    $softskills = $application->cvSubmission->softskills ?? [];
+                    $hasSkills = (is_array($hardskills) && count($hardskills) > 0) || (is_array($softskills) && count($softskills) > 0);
+                @endphp
+                @if($hasSkills)
                 <div class="info-card">
                     <div class="card-header">
                         <h4><i class="fas fa-cogs bg-purple"></i> Keahlian (Skills)</h4>
@@ -1143,47 +983,42 @@
                     <div class="card-body">
                         <div class="skills-container">
                             <!-- Hard Skills -->
+                            @if(is_array($hardskills) && count($hardskills) > 0)
                             <div class="skill-category">
                                 <h6><i class="fas fa-code"></i> Hard Skills (Technical)</h6>
                                 <div class="skill-badges">
-                                    @php
-                                        $hardskillsList = is_array($application->cvSubmission->hardskills ?? null) 
-                                            ? ($application->cvSubmission->hardskills ?? []) 
-                                            : explode(',', $application->cvSubmission->hardskills ?? 'PHP, Laravel, MySQL, JavaScript, React.js, Vue.js, Node.js, Git, Docker, AWS');
-                                    @endphp
-                                    @foreach($hardskillsList as $skill)
-                                        <span class="skill-badge hardskill">{{ trim($skill) }}</span>
+                                    @foreach($hardskills as $skill)
+                                        <span class="skill-badge hardskill">{{ $skill }}</span>
                                     @endforeach
                                 </div>
                             </div>
+                            @endif
 
                             <!-- Soft Skills -->
+                            @if(is_array($softskills) && count($softskills) > 0)
                             <div class="skill-category">
                                 <h6><i class="fas fa-users"></i> Soft Skills (Interpersonal)</h6>
                                 <div class="skill-badges">
-                                    @php
-                                        $softskillsList = is_array($application->cvSubmission->softskills ?? null) 
-                                            ? ($application->cvSubmission->softskills ?? []) 
-                                            : explode(',', $application->cvSubmission->softskills ?? 'Komunikasi, Teamwork, Problem Solving, Leadership, Time Management, Critical Thinking');
-                                    @endphp
-                                    @foreach($softskillsList as $skill)
-                                        <span class="skill-badge softskill">{{ trim($skill) }}</span>
+                                    @foreach($softskills as $skill)
+                                        <span class="skill-badge softskill">{{ $skill }}</span>
                                     @endforeach
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <!-- Cover Letter -->
-                @if($application->cover_letter ?? true)
+                @if($application->cover_letter)
                 <div class="info-card">
                     <div class="card-header">
                         <h4><i class="fas fa-envelope-open-text bg-warning"></i> Cover Letter</h4>
                     </div>
                     <div class="card-body">
                         <div class="cover-letter-content">
-                            <p>{{ $application->cover_letter ?? '' }}</p>
+                            <p>{{ $application->cover_letter }}</p>
                         </div>
                     </div>
                 </div>
@@ -1193,25 +1028,55 @@
             <!-- Sidebar -->
             <div class="col-lg-4">
                 <!-- CV Score -->
+                @if($application->score)
                 <div class="cv-score-card mb-4">
                     <h5 class="mb-3"><i class="fas fa-chart-pie mr-2 text-primary"></i> Skor CV</h5>
-                    <div class="score-circle">
-                        <span class="score-value">{{ $application->cv_score ?? '40' }}%</span>
+                    @php
+                        $scorePercent = $application->score;
+                        $scoreClass = $scorePercent >= 90 ? 'excellent' : ($scorePercent >= 80 ? 'good' : ($scorePercent >= 70 ? 'average' : 'poor'));
+                        $scoreLabel = $scorePercent >= 90 ? 'Sangat Baik' : ($scorePercent >= 80 ? 'Baik' : ($scorePercent >= 70 ? 'Cukup' : 'Kurang'));
+                    @endphp
+                    <div class="score-circle" style="background: conic-gradient(#667eea 0% {{ $scorePercent }}%, #e9ecef {{ $scorePercent }}% 100%);">
+                        <span class="score-value" style="background: white; width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">{{ $scorePercent }}%</span>
                     </div>
                     <p class="score-label">Kesesuaian dengan Posisi</p>
-                    <p class="score-status">
-                        @php $score = $application->cv_score ?? 40; @endphp
-                        @if($score >= 80)
-                            <i class="fas fa-check-circle"></i> Sangat Baik
-                        @elseif($score >= 60)
-                            <i class="fas fa-thumbs-up"></i> Baik
+                    <p class="score-status {{ $scoreClass }}">
+                        @if($scorePercent >= 90)
+                            <i class="fas fa-check-circle"></i>
+                        @elseif($scorePercent >= 80)
+                            <i class="fas fa-thumbs-up"></i>
+                        @elseif($scorePercent >= 70)
+                            <i class="fas fa-minus-circle"></i>
                         @else
-                            <i class="fas fa-exclamation-circle"></i> Cukup
+                            <i class="fas fa-exclamation-circle"></i>
                         @endif
+                        {{ $scoreLabel }}
                     </p>
                 </div>
+                @endif
+
+                <!-- Ranking -->
+                @if($application->ranking)
+                <div class="ranking-card mb-4">
+                    <div class="ranking-icon">
+                        @if($application->ranking == 1)
+                            🥇
+                        @elseif($application->ranking == 2)
+                            🥈
+                        @elseif($application->ranking == 3)
+                            🥉
+                        @else
+                            <i class="fas fa-trophy"></i>
+                        @endif
+                    </div>
+                    <div class="ranking-value">#{{ $application->ranking }}</div>
+                    <div class="ranking-label">Ranking Anda</div>
+                    <div class="ranking-total">dari {{ $totalApplicants }} pelamar</div>
+                </div>
+                @endif
 
                 <!-- Salary Expectation -->
+                @if($application->expected_salary)
                 <div class="salary-card mb-4">
                     <div class="salary-icon">
                         <i class="fas fa-money-bill-wave"></i>
@@ -1219,28 +1084,50 @@
                     <p class="salary-label">Ekspektasi Gaji</p>
                     <p class="salary-amount">Rp {{ $application->expected_salary }}</p>
                 </div>
+                @endif
 
-                <!-- Documents -->
-                <div class="info-card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-folder-open bg-info"></i> Dokumen</h4>
+                <!-- Interview Info (if scheduled) -->
+                @if($application->status == 'interview' && $application->interview_date)
+                <div class="interview-info-card">
+                    <h6><i class="fas fa-calendar-check"></i> Jadwal Interview</h6>
+                    <div class="info-row">
+                        <i class="fas fa-calendar"></i>
+                        <span>{{ \Carbon\Carbon::parse($application->interview_date)
+                        ->locale('id')
+                        ->translatedFormat('d F Y H:i') }}</span>
                     </div>
-                    <div class="card-body">
-                        <div class="document-item">
-                            <div class="document-icon pdf">
-                                <i class="fas fa-file-pdf"></i>
-                            </div>
-                            <div class="document-info">
-                                <h6>CV_{{ str_replace(' ', '_', $application->user->name ?? 'Ahmad_Rizky') }}.pdf</h6>
-                                <small>2.3 MB • Diupload {{ $application->created_at->format('d M Y') ?? '05 Des 2025' }}</small>
-                            </div>
-                            <div class="document-actions">
-                                <a href="#" title="Download"><i class="fas fa-download"></i></a>
-                                <a href="#" title="Lihat"><i class="fas fa-eye"></i></a>
-                            </div>
-                        </div>
+                    <div class="info-row">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ \Carbon\Carbon::parse($application->interview_date)
+                        ->locale('id')
+                        ->translatedFormat('H:i') }} WIB</span>
                     </div>
+                    @if($application->interview_type)
+                    <div class="info-row">
+                        <i class="fas fa-video"></i>
+                        <span>{{ ucfirst($application->interview_type) }}</span>
+                    </div>
+                    @endif
+                    @if($application->interview_location)
+                    <div class="info-row">
+                        <i class="fas fa-{{ $application->interview_type == 'online' ? 'link' : 'map-marker-alt' }}"></i>
+                        @if($application->interview_type == 'online')
+                            <a href="{{ $application->interview_location }}" target="_blank" style="color: #4338ca;">
+                                {{ Str::limit($application->interview_location, 30) }}
+                            </a>
+                        @else
+                            <span>{{ Str::limit($application->interview_location, 30) }}</span>
+                        @endif
+                    </div>
+                    @endif
+                    @if($application->interview_notes)
+                    <div class="info-row">
+                        <i class="fas fa-sticky-note"></i>
+                        <span>{{ $application->interview_notes }}</span>
+                    </div>
+                    @endif
                 </div>
+                @endif
 
                 <!-- Application Timeline -->
                 <div class="info-card">
@@ -1249,94 +1136,52 @@
                     </div>
                     <div class="card-body">
                         <div class="timeline">
-                            <div class="timeline-item completed">
-                                <div class="timeline-date">05 Des 2025, 10:30</div>
-                                <div class="timeline-title">Lamaran Dikirim</div>
-                                <div class="timeline-desc">CV berhasil diupload dan lamaran terkirim</div>
+                            @foreach($timeline as $item)
+                            <div class="timeline-item {{ $item['status'] }}">
+                                <div class="timeline-date">{{ $item['date'] }}</div>
+                                <div class="timeline-title">{{ $item['title'] }}</div>
+                                <div class="timeline-desc">{{ $item['desc'] }}</div>
                             </div>
-                            <div class="timeline-item completed">
-                                <div class="timeline-date">05 Des 2025, 14:00</div>
-                                <div class="timeline-title">CV Diproses</div>
-                                <div class="timeline-desc">CV sedang dianalisis oleh sistem</div>
-                            </div>
-                            <div class="timeline-item active">
-                                <div class="timeline-date">06 Des 2025, 09:00</div>
-                                <div class="timeline-title">Dalam Review</div>
-                                <div class="timeline-desc">Tim HR sedang mereview lamaran</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">-</div>
-                                <div class="timeline-title">Interview</div>
-                                <div class="timeline-desc">Menunggu jadwal interview</div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-date">-</div>
-                                <div class="timeline-title">Keputusan</div>
-                                <div class="timeline-desc">Hasil akhir lamaran</div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
-                <!-- HR Notes -->
-                <div class="info-card mt-4">
+                <!-- Job Info -->
+                <div class="info-card">
                     <div class="card-header">
-                        <h4><i class="fas fa-sticky-note bg-warning"></i> Catatan HR</h4>
+                        <h4><i class="fas fa-briefcase bg-info"></i> Info Lowongan</h4>
                     </div>
                     <div class="card-body">
-                        <div class="notes-section">
-                            <textarea placeholder="Tambahkan catatan untuk pelamar ini...">{{ $application->hr_notes ?? 'Kandidat memiliki pengalaman yang sangat relevan. Skill teknis baik, terutama di Laravel dan React. Perlu dijadwalkan interview teknis dengan tim engineering.' }}</textarea>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Posisi</small>
+                            <strong>{{ $application->jobOpening->judul ?? '-' }}</strong>
                         </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Perusahaan</small>
+                            <strong>{{ $application->jobOpening->perusahaan ?? '-' }}</strong>
+                        </div>
+                        @if($application->jobOpening->lokasi)
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Lokasi</small>
+                            <strong>{{ $application->jobOpening->lokasi }}</strong>
+                        </div>
+                        @endif
+                        @if($application->jobOpening->tipe)
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Tipe</small>
+                            <strong>{{ ucfirst($application->jobOpening->tipe) }}</strong>
+                        </div>
+                        @endif
+                        <a href="{{ route('lowongan-kerja.show', $application->jobopening_id) }}" class="btn btn-primary btn-block">
+                            <i class="fas fa-eye mr-1"></i> Lihat Detail Lowongan
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<!-- Schedule Interview Modal -->
-<div class="modal fade" id="scheduleInterviewModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-calendar-plus mr-2"></i> Jadwalkan Interview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="interviewForm">
-                    <div class="form-group">
-                        <label>Tanggal Interview</label>
-                        <input type="date" class="form-control" name="interview_date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Waktu</label>
-                        <input type="time" class="form-control" name="interview_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tipe Interview</label>
-                        <select class="form-control" name="interview_type">
-                            <option value="online">Online (Video Call)</option>
-                            <option value="onsite">Onsite (Tatap Muka)</option>
-                            <option value="phone">Phone Interview</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Catatan</label>
-                        <textarea class="form-control" name="notes" rows="3" placeholder="Catatan tambahan..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" onclick="scheduleInterview()">
-                    <i class="fas fa-check mr-1"></i> Jadwalkan
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('custom-js')
@@ -1345,88 +1190,5 @@ $(document).ready(function() {
     // Initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
 });
-
-function acceptApplicant() {
-    Swal.fire({
-        title: 'Terima Pelamar?',
-        text: 'Apakah Anda yakin ingin menerima pelamar ini?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: '<i class="fas fa-check mr-1"></i> Ya, Terima!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Submit form or AJAX call here
-            Swal.fire({
-                title: 'Berhasil!',
-                text: 'Pelamar telah diterima.',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        }
-    });
-}
-
-function rejectApplicant() {
-    Swal.fire({
-        title: 'Tolak Pelamar?',
-        text: 'Apakah Anda yakin ingin menolak pelamar ini?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: '<i class="fas fa-times mr-1"></i> Ya, Tolak!',
-        cancelButtonText: 'Batal',
-        input: 'textarea',
-        inputLabel: 'Alasan penolakan (opsional)',
-        inputPlaceholder: 'Masukkan alasan penolakan...'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Submit form or AJAX call here
-            Swal.fire({
-                title: 'Berhasil!',
-                text: 'Pelamar telah ditolak.',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        }
-    });
-}
-
-function scheduleInterview() {
-    const form = $('#interviewForm');
-    const date = form.find('[name="interview_date"]').val();
-    const time = form.find('[name="interview_time"]').val();
-    
-    if (!date || !time) {
-        Swal.fire({
-            title: 'Error!',
-            text: 'Silakan isi tanggal dan waktu interview.',
-            icon: 'error'
-        });
-        return;
-    }
-
-    // Submit form or AJAX call here
-    $('#scheduleInterviewModal').modal('hide');
-    
-    Swal.fire({
-        title: 'Berhasil!',
-        text: 'Interview telah dijadwalkan.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false
-    }).then(() => {
-        location.reload();
-    });
-}
 </script>
 @endpush

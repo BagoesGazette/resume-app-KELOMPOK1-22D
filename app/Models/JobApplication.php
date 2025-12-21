@@ -20,6 +20,17 @@ class JobApplication extends Model
         'reviewed_by',
         'reviewed_at',
         'review_notes',
+        'interview_date',
+        'interview_type',
+        'interview_location',
+        'interview_notes',
+        'accepted_at',
+        'start_date',
+        'offered_salary',
+        'acceptance_notes',
+        'rejected_at',
+        'rejection_reason',
+        'rejection_notes',
     ];
 
     protected $casts = [
@@ -87,5 +98,47 @@ class JobApplication extends Model
         };
     }
 
+    public function getInterviewDateFormattedAttribute()
+    {
+        return $this->interview_date 
+            ? $this->interview_date->locale('id')->translatedFormat('l, d F Y - H:i') 
+            : null;
+    }
+
+     /**
+     * Scopes
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'submitted');
+    }
+
+    public function scopeReviewed($query)
+    {
+        return $query->where('status', 'reviewed');
+    }
+
+    public function scopeInterview($query)
+    {
+        return $query->where('status', 'interview');
+    }
+
+    public function scopeAccepted($query)
+    {
+        return $query->where('status', 'accepted');
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'rejected');
+    }
+
+    public function scopeUpcomingInterviews($query)
+    {
+        return $query->where('status', 'interview')
+                     ->whereNotNull('interview_date')
+                     ->where('interview_date', '>=', now())
+                     ->orderBy('interview_date');
+    }
 
 }

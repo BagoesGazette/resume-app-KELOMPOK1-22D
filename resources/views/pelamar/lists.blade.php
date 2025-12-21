@@ -1127,11 +1127,33 @@
                         <i class="fas fa-calendar-times"></i>
                     </div>
                     <div class="deadline-label">Batas Akhir Lamaran</div>
-                    <div class="deadline-date">
-                        {{ isset($lowongan->tanggal_tutup) ? \Carbon\Carbon::parse($lowongan->tanggal_tutup)->format('d F Y') : '25 Desember 2025' }}
+                   <div class="deadline-date">
+                        {{ isset($lowongan->tanggal_tutup)
+                            ? \Carbon\Carbon::parse($lowongan->tanggal_tutup)
+                                ->locale('id')
+                                ->translatedFormat('d F Y')
+                            : ''
+                        }}
                     </div>
+
                     <div class="deadline-remaining">
-                        <i class="fas fa-exclamation-triangle mr-1"></i> 12 hari lagi
+                        @if(isset($lowongan->tanggal_tutup))
+                            @php
+                                $tanggalTutup = \Carbon\Carbon::parse($lowongan->tanggal_tutup);
+                                $sisaJam = now()->diffInHours($tanggalTutup, false);
+                                $sisaHari = ceil($sisaJam / 24);
+                            @endphp
+
+                            @if($sisaHari > 1)
+                                <i class="fas fa-exclamation-triangle mr-1"></i> {{ $sisaHari }} hari lagi
+                            @elseif($sisaHari === 1)
+                                <i class="fas fa-exclamation-circle mr-1"></i> 1 hari lagi
+                            @elseif($sisaHari === 0)
+                                <i class="fas fa-exclamation-circle mr-1"></i> Hari ini terakhir
+                            @else
+                                <i class="fas fa-times-circle mr-1"></i> Lowongan ditutup
+                            @endif
+                        @endif
                     </div>
                 </div>
 

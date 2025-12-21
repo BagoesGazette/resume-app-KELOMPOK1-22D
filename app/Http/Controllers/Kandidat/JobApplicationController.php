@@ -117,4 +117,90 @@ class JobApplicationController extends Controller
         return redirect()->route('lowongan-kerja.index')
             ->with('success', 'Lamaran berhasil dikirim!');
     }
+
+    public function scheduleInterview(Request $request, string $id)
+    {
+        $request->validate([
+            'interview_date' => 'required|date|after:now',
+            'interview_type' => 'required|in:online,onsite,phone',
+            'interview_location' => 'nullable|string|max:255',
+            'interview_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $application = JobApplication::findOrFail($id);
+        
+        $application->update([
+            'interview_date' => $request->interview_date,
+            'interview_type' => $request->interview_type,
+            'interview_location' => $request->interview_location,
+            'interview_notes' => $request->interview_notes,
+            'status' => 'interview',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Jadwal interview berhasil disimpan'
+        ]);
+    }
+
+     /**
+     * Accept applicant
+     */
+    public function acceptApplicant(Request $request, $id)
+    {
+        $request->validate([
+            'acceptance_notes' => 'nullable|string|max:1000',
+            'start_date' => 'nullable|date',
+            'offered_salary' => 'nullable|numeric',
+        ]);
+
+        $application = JobApplication::with(['user', 'jobOpening'])->findOrFail($id);
+        
+        $application->update([
+            'status' => 'accepted',
+            'accepted_at' => now(),
+            'acceptance_notes' => $request->acceptance_notes,
+            'start_date' => $request->start_date,
+            'offered_salary' => $request->offered_salary,
+        ]);
+
+        // Kirim email notifikasi (opsional)
+        // Mail::to($application->user->email)->send(new ApplicationAccepted($application));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pelamar berhasil diterima! Notifikasi telah dikirim ke ' . $application->user->email
+        ]);
+    }
+
+    /**
+     * Reject applicant
+     */
+    public function rejectApplicant(Request $request, $id)
+    {
+        $request->validate([
+            'rejection_reason' => 'required|string|max:500',
+            'rejection_notes' => 'nullable|string|max:1000',
+            'send_notification' => 'nullable|boolean',
+        ]);
+
+        $application = JobApplication::with(['user', 'jobOpening'])->findOrFail($id);
+        
+        $application->update([
+            'status' => 'rejected',
+            'rejected_at' => now(),
+            'rejection_reason' => $request->rejection_reason,
+            'rejection_notes' => $request->rejection_notes,
+        ]);
+
+        // Kirim email notifikasi jika diminta
+        if ($request->send_notification) {
+            // Mail::to($application->user->email)->send(new ApplicationRejected($application));
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pelamar telah ditolak.' . ($request->send_notification ? ' Notifikasi telah dikirim.' : '')
+        ]);
+    }
 }

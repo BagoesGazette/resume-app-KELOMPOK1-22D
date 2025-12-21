@@ -49,12 +49,6 @@
             <span>Kriteria</span>
           </a>
         </li>
-        <li class="{{ Request::is('laporan') ? 'active' : '' }}">
-          <a class="nav-link" href="/">
-            <i class="fas fa-file-alt"></i> 
-            <span>Laporan</span>
-          </a>
-        </li>
         @endrole
 
         @role('kandidat')

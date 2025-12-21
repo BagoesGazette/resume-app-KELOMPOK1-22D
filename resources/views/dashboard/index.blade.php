@@ -747,22 +747,29 @@
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="welcome-content">
-                        <h2>Selamat Datang Kembali, Admin! 👋</h2>
-                        <p>Berikut adalah ringkasan aktivitas rekrutmen hari ini. Anda memiliki <strong>12 lamaran baru</strong> yang perlu direview.</p>
-                        <a href="#" class="btn btn-light">
+                        <h2>Selamat Datang Kembali, {{ Auth::user()->name }}! 👋</h2>
+                        <p>
+                            Berikut adalah ringkasan aktivitas rekrutmen hari ini. 
+                            @if($lamaranBaru > 0)
+                                Anda memiliki <strong>{{ $lamaranBaru }} lamaran baru</strong> yang perlu direview.
+                            @else
+                                Semua lamaran sudah ditangani hari ini.
+                            @endif
+                        </p>
+                        <a href="{{ route('job.index') }}" class="btn btn-light">
                             <i class="fas fa-eye mr-2"></i> Lihat Lamaran Baru
                         </a>
                         <div class="welcome-stats">
                             <div class="welcome-stat-item">
-                                <div class="number">{{ $totalLowongan ?? 24 }}</div>
+                                <div class="number">{{ $totalLowongan }}</div>
                                 <div class="label">Lowongan Aktif</div>
                             </div>
                             <div class="welcome-stat-item">
-                                <div class="number">{{ $interviewToday ?? 5 }}</div>
+                                <div class="number">{{ $interviewToday }}</div>
                                 <div class="label">Interview Hari Ini</div>
                             </div>
                             <div class="welcome-stat-item">
-                                <div class="number">{{ $pendingReview ?? 12 }}</div>
+                                <div class="number">{{ $pendingReview }}</div>
                                 <div class="label">Pending Review</div>
                             </div>
                         </div>
@@ -779,9 +786,10 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-label">Total Pengguna</div>
-                    <div class="stat-value">{{ $pengguna ?? '1,248' }}</div>
-                    <span class="stat-trend up">
-                        <i class="fas fa-arrow-up"></i> 12% dari bulan lalu
+                    <div class="stat-value">{{ number_format($pengguna) }}</div>
+                    <span class="stat-trend {{ $penggunaTrendPercent['direction'] }}">
+                        <i class="fas fa-arrow-{{ $penggunaTrendPercent['direction'] }}"></i> 
+                        {{ $penggunaTrendPercent['percent'] }}% dari bulan lalu
                     </span>
                 </div>
             </div>
@@ -791,9 +799,10 @@
                         <i class="fas fa-paper-plane"></i>
                     </div>
                     <div class="stat-label">Lamaran Terkirim</div>
-                    <div class="stat-value">{{ $lamaranTerkirim ?? '1,201' }}</div>
-                    <span class="stat-trend up">
-                        <i class="fas fa-arrow-up"></i> 8% dari bulan lalu
+                    <div class="stat-value">{{ number_format($lamaranTerkirim) }}</div>
+                    <span class="stat-trend {{ $lamaranTrendPercent['direction'] }}">
+                        <i class="fas fa-arrow-{{ $lamaranTrendPercent['direction'] }}"></i> 
+                        {{ $lamaranTrendPercent['percent'] }}% dari bulan lalu
                     </span>
                 </div>
             </div>
@@ -803,9 +812,10 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-label">Lamaran Diterima</div>
-                    <div class="stat-value">{{ $lamaranDiterima ?? '47' }}</div>
-                    <span class="stat-trend up">
-                        <i class="fas fa-arrow-up"></i> 24% dari bulan lalu
+                    <div class="stat-value">{{ number_format($lamaranDiterima) }}</div>
+                    <span class="stat-trend {{ $diterimaTrendPercent['direction'] }}">
+                        <i class="fas fa-arrow-{{ $diterimaTrendPercent['direction'] }}"></i> 
+                        {{ $diterimaTrendPercent['percent'] }}% dari bulan lalu
                     </span>
                 </div>
             </div>
@@ -815,9 +825,10 @@
                         <i class="fas fa-times-circle"></i>
                     </div>
                     <div class="stat-label">Lamaran Ditolak</div>
-                    <div class="stat-value">{{ $lamaranDitolak ?? '42' }}</div>
-                    <span class="stat-trend down">
-                        <i class="fas fa-arrow-down"></i> 5% dari bulan lalu
+                    <div class="stat-value">{{ number_format($lamaranDitolak) }}</div>
+                    <span class="stat-trend {{ $ditolakTrendPercent['direction'] }}">
+                        <i class="fas fa-arrow-{{ $ditolakTrendPercent['direction'] }}"></i> 
+                        {{ $ditolakTrendPercent['percent'] }}% dari bulan lalu
                     </span>
                 </div>
             </div>
@@ -828,7 +839,7 @@
             <div class="col-lg-8">
                 <div class="chart-card">
                     <div class="card-header">
-                        <h4><i class="fas fa-chart-line mr-2 text-primary"></i> Statistik Pelamar Kerja 2025</h4>
+                        <h4><i class="fas fa-chart-line mr-2 text-primary"></i> Statistik Pelamar Kerja {{ date('Y') }}</h4>
                         <div class="chart-tabs">
                             <button class="tab active" data-period="monthly">Bulanan</button>
                             <button class="tab" data-period="weekly">Mingguan</button>
@@ -844,25 +855,17 @@
                 <div class="info-card">
                     <div class="card-header">
                         <h4><i class="fas fa-briefcase"></i> Lowongan Terpopuler</h4>
-                        <a href="#" class="btn btn-sm btn-primary">Lihat Semua</a>
+                        <a href="{{ route('lowongan-kerja.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
                     </div>
                     <div class="card-body">
-                        @php
-                            $popularJobs = [
-                                ['title' => 'Senior Frontend Developer', 'company' => 'PT. Tech Indonesia', 'applicants' => 48, 'color' => '#667eea'],
-                                ['title' => 'UI/UX Designer', 'company' => 'PT. Digital Creative', 'applicants' => 35, 'color' => '#11998e'],
-                                ['title' => 'Backend Developer', 'company' => 'PT. Startup Maju', 'applicants' => 28, 'color' => '#f7971e'],
-                                ['title' => 'Data Analyst', 'company' => 'PT. Data Solutions', 'applicants' => 22, 'color' => '#eb3349'],
-                            ];
-                        @endphp
-                        @foreach($popularJobs as $job)
+                        @forelse($popularJobs as $job)
                         <div class="job-stat-item">
                             <div class="job-info">
                                 <div class="job-icon" style="background: {{ $job['color'] }};">
                                     <i class="fas fa-briefcase"></i>
                                 </div>
                                 <div class="job-details">
-                                    <h6>{{ $job['title'] }}</h6>
+                                    <h6>{{ Str::limit($job['title'], 30) }}</h6>
                                     <small>{{ $job['company'] }}</small>
                                 </div>
                             </div>
@@ -871,7 +874,12 @@
                                 <div class="label">Pelamar</div>
                             </div>
                         </div>
-                        @endforeach
+                        @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-briefcase fa-2x mb-2"></i>
+                            <p>Belum ada lowongan</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -890,7 +898,6 @@
                     <div class="current-day">{{ $now->isoFormat('dddd') }}</div>
                 </div>
 
-
                 <!-- Application Status Donut -->
                 <div class="info-card">
                     <div class="card-header">
@@ -900,26 +907,30 @@
                         <div class="donut-chart-wrapper">
                             <canvas id="donutChart"></canvas>
                             <div class="donut-center">
-                                <div class="value">1,201</div>
+                                <div class="value">{{ number_format($lamaranTerkirim) }}</div>
                                 <div class="label">Total</div>
                             </div>
                         </div>
                         <div class="chart-legend">
                             <div class="legend-item">
-                                <span class="legend-dot" style="background: var(--warning-gradient);"></span>
-                                Pending
+                                <span class="legend-dot" style="background: #f7971e;"></span>
+                                Pending ({{ $statusLamaran['pending'] }})
                             </div>
                             <div class="legend-item">
-                                <span class="legend-dot" style="background: var(--info-gradient);"></span>
-                                Review
+                                <span class="legend-dot" style="background: #00c6fb;"></span>
+                                Review ({{ $statusLamaran['review'] }})
                             </div>
                             <div class="legend-item">
-                                <span class="legend-dot" style="background: var(--success-gradient);"></span>
-                                Diterima
+                                <span class="legend-dot" style="background: #a855f7;"></span>
+                                Interview ({{ $statusLamaran['interview'] }})
                             </div>
                             <div class="legend-item">
-                                <span class="legend-dot" style="background: var(--danger-gradient);"></span>
-                                Ditolak
+                                <span class="legend-dot" style="background: #11998e;"></span>
+                                Diterima ({{ $statusLamaran['diterima'] }})
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #eb3349;"></span>
+                                Ditolak ({{ $statusLamaran['ditolak'] }})
                             </div>
                         </div>
                     </div>
@@ -934,37 +945,37 @@
                         <div class="progress-stat">
                             <div class="progress-header">
                                 <span class="progress-label">CV Screening</span>
-                                <span class="progress-value">78%</span>
+                                <span class="progress-value">{{ $conversionRates['screening'] }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar primary" style="width: 78%;"></div>
+                                <div class="progress-bar primary" style="width: {{ $conversionRates['screening'] }}%;"></div>
                             </div>
                         </div>
                         <div class="progress-stat">
                             <div class="progress-header">
                                 <span class="progress-label">Interview</span>
-                                <span class="progress-value">45%</span>
+                                <span class="progress-value">{{ $conversionRates['interview'] }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar success" style="width: 45%;"></div>
+                                <div class="progress-bar success" style="width: {{ $conversionRates['interview'] }}%;"></div>
                             </div>
                         </div>
                         <div class="progress-stat">
                             <div class="progress-header">
                                 <span class="progress-label">Offering</span>
-                                <span class="progress-value">28%</span>
+                                <span class="progress-value">{{ $conversionRates['offering'] }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar warning" style="width: 28%;"></div>
+                                <div class="progress-bar warning" style="width: {{ $conversionRates['offering'] }}%;"></div>
                             </div>
                         </div>
                         <div class="progress-stat">
                             <div class="progress-header">
                                 <span class="progress-label">Hired</span>
-                                <span class="progress-value">18%</span>
+                                <span class="progress-value">{{ $conversionRates['hired'] }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar danger" style="width: 18%;"></div>
+                                <div class="progress-bar danger" style="width: {{ $conversionRates['hired'] }}%;"></div>
                             </div>
                         </div>
                     </div>
@@ -978,30 +989,25 @@
                 <div class="info-card">
                     <div class="card-header">
                         <h4><i class="fas fa-history"></i> Aktivitas Terbaru</h4>
-                        <a href="#" class="text-primary" style="font-size: 0.85rem;">Lihat Semua</a>
                     </div>
                     <div class="card-body">
-                        @php
-                            $activities = [
-                                ['icon' => 'user-plus', 'type' => 'primary', 'title' => 'Pelamar Baru', 'desc' => 'Ahmad Rizky melamar Frontend Developer', 'time' => '5 menit lalu'],
-                                ['icon' => 'check-circle', 'type' => 'success', 'title' => 'Lamaran Diterima', 'desc' => 'Budi Santoso diterima sebagai Backend Dev', 'time' => '1 jam lalu'],
-                                ['icon' => 'calendar-check', 'type' => 'info', 'title' => 'Interview Dijadwalkan', 'desc' => 'Siti Nurhaliza - 15 Des 2025, 10:00', 'time' => '2 jam lalu'],
-                                ['icon' => 'times-circle', 'type' => 'danger', 'title' => 'Lamaran Ditolak', 'desc' => 'Dewi Kartika tidak memenuhi kualifikasi', 'time' => '3 jam lalu'],
-                                ['icon' => 'briefcase', 'type' => 'warning', 'title' => 'Lowongan Baru', 'desc' => 'Data Analyst di PT. Tech Indonesia', 'time' => '5 jam lalu'],
-                            ];
-                        @endphp
-                        @foreach($activities as $activity)
+                        @forelse($recentActivities as $activity)
                         <div class="activity-item">
                             <div class="activity-icon {{ $activity['type'] }}">
                                 <i class="fas fa-{{ $activity['icon'] }}"></i>
                             </div>
                             <div class="activity-content">
                                 <h6>{{ $activity['title'] }}</h6>
-                                <p>{{ $activity['desc'] }}</p>
+                                <p>{{ Str::limit($activity['desc'], 40) }}</p>
                             </div>
                             <div class="activity-time">{{ $activity['time'] }}</div>
                         </div>
-                        @endforeach
+                        @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-history fa-2x mb-2"></i>
+                            <p>Belum ada aktivitas</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -1013,16 +1019,7 @@
                         <h4><i class="fas fa-trophy"></i> Top Kandidat Bulan Ini</h4>
                     </div>
                     <div class="card-body">
-                        @php
-                            $topApplicants = [
-                                ['name' => 'Budi Santoso', 'position' => 'Backend Developer', 'score' => 95, 'color' => '#667eea'],
-                                ['name' => 'Ahmad Rizky', 'position' => 'Frontend Developer', 'score' => 92, 'color' => '#11998e'],
-                                ['name' => 'Siti Nurhaliza', 'position' => 'UI/UX Designer', 'score' => 88, 'color' => '#f7971e'],
-                                ['name' => 'Eko Prasetyo', 'position' => 'Full Stack Dev', 'score' => 85, 'color' => '#eb3349'],
-                                ['name' => 'Dewi Kartika', 'position' => 'Data Analyst', 'score' => 82, 'color' => '#00c6fb'],
-                            ];
-                        @endphp
-                        @foreach($topApplicants as $index => $applicant)
+                        @forelse($topApplicants as $index => $applicant)
                         <div class="applicant-rank-item">
                             <div class="rank-badge {{ $index == 0 ? 'gold' : ($index == 1 ? 'silver' : ($index == 2 ? 'bronze' : 'normal')) }}">
                                 {{ $index + 1 }}
@@ -1031,12 +1028,17 @@
                                 {{ strtoupper(substr($applicant['name'], 0, 2)) }}
                             </div>
                             <div class="applicant-info">
-                                <h6>{{ $applicant['name'] }}</h6>
-                                <small>{{ $applicant['position'] }}</small>
+                                <h6>{{ Str::limit($applicant['name'], 15) }}</h6>
+                                <small>{{ Str::limit($applicant['position'], 20) }}</small>
                             </div>
                             <div class="applicant-score">{{ $applicant['score'] }}%</div>
                         </div>
-                        @endforeach
+                        @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-trophy fa-2x mb-2"></i>
+                            <p>Belum ada kandidat dinilai</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -1048,7 +1050,7 @@
                         <h4><i class="fas fa-bolt"></i> Aksi Cepat</h4>
                     </div>
                     <div class="card-body">
-                        <a href="#" class="quick-action-btn">
+                        <a href="{{ route('job.create') }}" class="quick-action-btn">
                             <div class="action-icon primary">
                                 <i class="fas fa-plus"></i>
                             </div>
@@ -1058,13 +1060,13 @@
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
-                        <a href="#" class="quick-action-btn">
+                        <a href="{{ route('job.index') }}" class="quick-action-btn">
                             <div class="action-icon success">
                                 <i class="fas fa-users"></i>
                             </div>
                             <div class="action-text">
                                 <h6>Review Lamaran</h6>
-                                <small>12 lamaran menunggu</small>
+                                <small>{{ $pendingReview }} lamaran menunggu</small>
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
@@ -1074,11 +1076,11 @@
                             </div>
                             <div class="action-text">
                                 <h6>Jadwal Interview</h6>
-                                <small>5 interview hari ini</small>
+                                <small>{{ $interviewToday }} interview hari ini</small>
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
-                        <a href="#" class="quick-action-btn">
+                        <a href="#" class="quick-action-btn" id="btnExportReport">
                             <div class="action-icon danger">
                                 <i class="fas fa-file-export"></i>
                             </div>
@@ -1100,16 +1102,19 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 $(document).ready(function() {
+    // Initial chart data from PHP
+    let chartData = @json($chartData);
+
     // Main Chart
     const mainCtx = document.getElementById('mainChart').getContext('2d');
-    const mainChart = new Chart(mainCtx, {
+    let mainChart = new Chart(mainCtx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: chartData.labels,
             datasets: [
                 {
                     label: 'Lamaran Masuk',
-                    data: [65, 78, 90, 81, 95, 110, 125, 140, 132, 155, 148, 170],
+                    data: chartData.lamaranMasuk,
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
                     borderWidth: 3,
@@ -1123,7 +1128,7 @@ $(document).ready(function() {
                 },
                 {
                     label: 'Diterima',
-                    data: [12, 15, 18, 14, 22, 25, 28, 32, 30, 35, 33, 40],
+                    data: chartData.diterima,
                     borderColor: '#11998e',
                     backgroundColor: 'rgba(17, 153, 142, 0.1)',
                     borderWidth: 3,
@@ -1137,7 +1142,7 @@ $(document).ready(function() {
                 },
                 {
                     label: 'Ditolak',
-                    data: [8, 10, 12, 9, 14, 16, 18, 20, 19, 22, 20, 25],
+                    data: chartData.ditolak,
                     borderColor: '#eb3349',
                     backgroundColor: 'rgba(235, 51, 73, 0.1)',
                     borderWidth: 3,
@@ -1160,70 +1165,48 @@ $(document).ready(function() {
                     labels: {
                         usePointStyle: true,
                         padding: 20,
-                        font: {
-                            size: 12,
-                            weight: '600'
-                        }
+                        font: { size: 12, weight: '600' }
                     }
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     padding: 15,
-                    titleFont: {
-                        size: 14,
-                        weight: '600'
-                    },
-                    bodyFont: {
-                        size: 13
-                    },
+                    titleFont: { size: 14, weight: '600' },
+                    bodyFont: { size: 13 },
                     cornerRadius: 10
                 }
             },
             scales: {
                 x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            size: 12,
-                            weight: '500'
-                        }
-                    }
+                    grid: { display: false },
+                    ticks: { font: { size: 12, weight: '500' } }
                 },
                 y: {
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    },
-                    ticks: {
-                        font: {
-                            size: 12,
-                            weight: '500'
-                        }
-                    }
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                    ticks: { font: { size: 12, weight: '500' } }
                 }
             },
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            }
+            interaction: { intersect: false, mode: 'index' }
         }
     });
 
     // Donut Chart
     const donutCtx = document.getElementById('donutChart').getContext('2d');
+    const statusData = @json($statusLamaran);
+    
     const donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Pending', 'Review', 'Diterima', 'Ditolak'],
+            labels: ['Pending', 'Review', 'Interview', 'Diterima', 'Ditolak'],
             datasets: [{
-                data: [350, 280, 47, 42],
-                backgroundColor: [
-                    '#f7971e',
-                    '#00c6fb',
-                    '#11998e',
-                    '#eb3349'
+                data: [
+                    statusData.pending,
+                    statusData.review,
+                    statusData.interview,
+                    statusData.diterima,
+                    statusData.ditolak
                 ],
+                backgroundColor: ['#f7971e', '#00c6fb', '#a855f7', '#11998e', '#eb3349'],
                 borderWidth: 0,
                 cutout: '75%'
             }]
@@ -1232,9 +1215,7 @@ $(document).ready(function() {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     padding: 12,
@@ -1244,11 +1225,32 @@ $(document).ready(function() {
         }
     });
 
-    // Chart tabs
+    // Chart tabs - Load data via AJAX
     $('.chart-tabs .tab').on('click', function() {
+        const period = $(this).data('period');
+        
         $('.chart-tabs .tab').removeClass('active');
         $(this).addClass('active');
-        // Here you would update the chart data based on the selected period
+
+        // Show loading
+        $('#mainChart').css('opacity', '0.5');
+
+        $.ajax({
+            url: '{{ route("dashboard.chart-data") }}',
+            data: { period: period },
+            success: function(data) {
+                mainChart.data.labels = data.labels;
+                mainChart.data.datasets[0].data = data.lamaranMasuk;
+                mainChart.data.datasets[1].data = data.diterima;
+                mainChart.data.datasets[2].data = data.ditolak;
+                mainChart.update();
+                $('#mainChart').css('opacity', '1');
+            },
+            error: function() {
+                $('#mainChart').css('opacity', '1');
+                alert('Gagal memuat data chart');
+            }
+        });
     });
 
     // Animate progress bars
@@ -1259,15 +1261,28 @@ $(document).ready(function() {
         });
     }, 500);
 
-    // Hover effects for quick actions
-    $('.quick-action-btn').hover(
-        function() {
-            $(this).find('.action-arrow').css('transform', 'translateX(5px)');
-        },
-        function() {
-            $(this).find('.action-arrow').css('transform', 'translateX(0)');
-        }
-    );
+    // Export report button
+    $('#btnExportReport').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Export Laporan',
+            text: 'Pilih format laporan yang ingin diexport',
+            icon: 'question',
+            showCancelButton: true,
+            showDenyButton: true,
+            confirmButtonText: '<i class="fas fa-file-excel"></i> Excel',
+            denyButtonText: '<i class="fas fa-file-pdf"></i> PDF',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#28a745',
+            denyButtonColor: '#dc3545',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route("dashboard.export.excel") ?? "#" }}';
+            } else if (result.isDenied) {
+                window.location.href = '{{ route("dashboard.export.pdf") ?? "#" }}';
+            }
+        });
+    });
 });
 </script>
 @endpush

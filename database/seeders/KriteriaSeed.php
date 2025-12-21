@@ -17,33 +17,36 @@ class KriteriaSeed extends Seeder
             [
                 'code'  => 'C1',
                 'name'  => 'Pendidikan Terakhir',
-                'bobot' => 15,
+                // 'bobot' => 15,
+                'bobot' => 40,
             ],
             [
                 'code'  => 'C2',
                 'name'  => 'IPK/Nilai Akhir',
-                'bobot' => 20,
+                // 'bobot' => 20,
+                'bobot' => 30,
             ],
             [
                 'code'  => 'C3',
                 'name'  => 'Pengalaman Kerja',
-                'bobot' => 25,
+                // 'bobot' => 25,
+                'bobot' => 30,
             ],
-            [
-                'code'  => 'C4',
-                'name'  => 'Sertifikasi/Prestasi',
-                'bobot' => 10,
-            ],
-            [
-                'code'  => 'C5',
-                'name'  => 'HardSkill',
-                'bobot' => 20,
-            ],
-            [
-                'code'  => 'C6',
-                'name'  => 'SoftSkill',
-                'bobot' => 10,
-            ],
+            // [
+            //     'code'  => 'C4',
+            //     'name'  => 'Sertifikasi/Prestasi',
+            //     'bobot' => 10,
+            // ],
+            // [
+            //     'code'  => 'C5',
+            //     'name'  => 'HardSkill',
+            //     'bobot' => 20,
+            // ],
+            // [
+            //     'code'  => 'C6',
+            //     'name'  => 'SoftSkill',
+            //     'bobot' => 10,
+            // ],
         ];
 
         foreach ($data as $item) {
