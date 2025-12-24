@@ -12,7 +12,7 @@ class StorageService
 
     public function __construct()
     {
-        $this->disk = 's3'; // Configure in filesystems.php
+        $this->disk = 's3'; 
     }
 
     /**
@@ -50,6 +50,7 @@ class StorageService
                 'url' => $url,
                 'path' => $path,
                 'name' => $fileName,
+                'original_name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
                 'type' => $this->detectFileType($file),
             ];

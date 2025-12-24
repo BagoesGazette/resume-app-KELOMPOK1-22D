@@ -78,6 +78,23 @@
                                 @enderror
                             </div>
                         </div>
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="date">Kategori</label>
+                                <select name="category" id="category" class="custom-select @error('category') is-invalid @enderror">
+                                    <option disabled>Pilih category</option>
+                                    <option value="Programmer">Programmer</option>
+                                    <option value="Analasis">Analisis</option>
+                                    <option value="Designer">Designer</option>
+                                </select>
+
+                                @error('category')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Deskripsi</label>

@@ -11,6 +11,22 @@
     --purple-gradient: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
 }
 
+.skill-badge {
+    display: inline-block;
+    padding: 6px 15px;
+    margin: 4px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transition: transform 0.2s ease;
+}
+
+.skill-badge:hover {
+    transform: scale(1.05);
+}
+
 /* Welcome Banner */
 .welcome-banner {
     background: var(--primary-gradient);
@@ -75,15 +91,6 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.welcome-illustration {
-    position: absolute;
-    right: 40px;
-    bottom: 0;
-    height: 180px;
-    z-index: 1;
-    opacity: 0.95;
-}
-
 /* Profile Completion */
 .profile-completion {
     background: white;
@@ -97,6 +104,14 @@
     font-weight: 700;
     color: #34395e;
     margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-completion h6 span {
+    font-size: 0.9rem;
+    color: #667eea;
 }
 
 .completion-bar {
@@ -211,25 +226,6 @@
     font-weight: 500;
 }
 
-.stat-card .stat-trend {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 0.8rem;
-    padding: 4px 10px;
-    border-radius: 50px;
-}
-
-.stat-card .stat-trend.up {
-    background: #d4edda;
-    color: #155724;
-}
-
-.stat-card .stat-trend.down {
-    background: #f8d7da;
-    color: #721c24;
-}
-
 /* Info Cards */
 .info-card {
     background: white;
@@ -324,31 +320,6 @@
     text-transform: uppercase;
 }
 
-.application-status.pending {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.application-status.review {
-    background: #cce5ff;
-    color: #004085;
-}
-
-.application-status.interview {
-    background: #e2d5f1;
-    color: #6f42c1;
-}
-
-.application-status.accepted {
-    background: #d4edda;
-    color: #155724;
-}
-
-.application-status.rejected {
-    background: #f8d7da;
-    color: #721c24;
-}
-
 /* Job Recommendations */
 .job-recommendation {
     padding: 18px;
@@ -408,71 +379,14 @@
     color: #667eea;
 }
 
-.job-recommendation .match-badge {
+.job-recommendation .type-badge {
     padding: 4px 10px;
-    background: var(--success-gradient);
+    background: var(--primary-gradient);
     color: white;
     border-radius: 50px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
-}
-
-/* Activity Timeline */
-.activity-timeline {
-    position: relative;
-    padding-left: 30px;
-}
-
-.activity-timeline::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 5px;
-    bottom: 5px;
-    width: 2px;
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-    border-radius: 2px;
-}
-
-.activity-item {
-    position: relative;
-    padding-bottom: 20px;
-}
-
-.activity-item:last-child {
-    padding-bottom: 0;
-}
-
-.activity-item::before {
-    content: '';
-    position: absolute;
-    left: -26px;
-    top: 5px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: white;
-    border: 3px solid #667eea;
-}
-
-.activity-item.success::before { border-color: #28a745; }
-.activity-item.warning::before { border-color: #ffc107; }
-.activity-item.info::before { border-color: #17a2b8; }
-.activity-item.danger::before { border-color: #dc3545; }
-
-.activity-time {
-    font-size: 0.75rem;
-    color: #999;
-    margin-bottom: 3px;
-}
-
-.activity-text {
-    font-size: 0.9rem;
-    color: #34395e;
-}
-
-.activity-text strong {
-    color: #667eea;
+    text-transform: uppercase;
 }
 
 /* Quick Actions */
@@ -541,16 +455,27 @@
 
 /* Interview Schedule */
 .interview-card {
-    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-    border: 2px solid #ffcccc;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+    border: 2px solid #e0e0ff;
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.interview-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
 }
 
 .interview-card.upcoming {
     background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
     border-color: #9ae6b4;
+}
+
+.interview-card.today {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    border-color: #feb2b2;
 }
 
 .interview-card .interview-date {
@@ -575,12 +500,16 @@
 .interview-card .date-box .day {
     font-size: 1.3rem;
     font-weight: 800;
-    color: #dc3545;
+    color: #667eea;
     line-height: 1;
 }
 
 .interview-card.upcoming .date-box .day {
     color: #28a745;
+}
+
+.interview-card.today .date-box .day {
+    color: #dc3545;
 }
 
 .interview-card .date-box .month {
@@ -599,77 +528,71 @@
     color: #6c757d;
 }
 
-.interview-card .interview-time {
+.interview-card .interview-details {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 15px;
     font-size: 0.85rem;
     color: #6c757d;
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 1px dashed #ddd;
 }
 
-.interview-card .interview-time i {
-    color: #667eea;
-}
-
-/* Skills Chart */
-.skill-item {
-    margin-bottom: 15px;
-}
-
-.skill-item:last-child {
-    margin-bottom: 0;
-}
-
-.skill-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
-}
-
-.skill-name {
-    font-weight: 600;
-    color: #34395e;
-    font-size: 0.9rem;
-}
-
-.skill-percentage {
-    color: #667eea;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.skill-bar {
-    height: 8px;
-    background: #e9ecef;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.skill-progress {
-    height: 100%;
-    border-radius: 10px;
-    background: var(--primary-gradient);
-}
-
-/* Notification Badge */
-.notification-dot {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
-    background: #dc3545;
-    border-radius: 50%;
+.interview-card .interview-details span {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
+}
+
+.interview-card .interview-details i {
+    color: #667eea;
+}
+
+.interview-type-badge {
+    padding: 3px 10px;
+    border-radius: 50px;
     font-size: 0.7rem;
-    color: white;
-    font-weight: 700;
-    border: 2px solid white;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.interview-type-badge.online {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.interview-type-badge.onsite {
+    background: #d4edda;
+    color: #155724;
+}
+
+.interview-type-badge.phone {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state h6 {
+    color: #34395e;
+    margin-bottom: 5px;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
 }
 
 /* Responsive */
@@ -681,10 +604,6 @@
 
     .welcome-banner h2 {
         font-size: 1.4rem;
-    }
-
-    .welcome-illustration {
-        display: none;
     }
 
     .stat-card .stat-value {
@@ -741,35 +660,19 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <div class="welcome-content">
-                        <h2>Selamat Datang, {{ Auth::user()->name ?? 'Kandidat' }}! 👋</h2>
-                        <p>Pantau perkembangan lamaran kerja Anda dan temukan peluang karir terbaik.</p>
+                        <h2>Selamat Datang, {{ Auth::user()->name }}! 👋</h2>
+                        <p>
+                            @if($stats['pending'] > 0)
+                                Anda memiliki <strong>{{ $stats['pending'] }} lamaran</strong> yang sedang menunggu review.
+                            @elseif($stats['interview'] > 0)
+                                Anda memiliki <strong>{{ $stats['interview'] }} jadwal interview</strong> yang akan datang.
+                            @else
+                                Pantau perkembangan lamaran kerja Anda dan temukan peluang karir terbaik.
+                            @endif
+                        </p>
                         <a href="{{ route('lowongan-kerja.index') }}" class="btn btn-light">
                             <i class="fas fa-search mr-2"></i> Cari Lowongan
                         </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profile Completion -->
-        <div class="profile-completion">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h6><i class="fas fa-user-circle mr-2 text-primary"></i> Kelengkapan Profil</h6>
-                    <div class="completion-bar">
-                        <div class="completion-progress" style="width: {{ $profileCompletion ?? 75 }}%;"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <small class="text-muted">{{ $profileCompletion ?? 75 }}% Lengkap</small>
-                        <a href="#" class="text-primary" style="font-size: 0.85rem;"><i class="fas fa-edit mr-1"></i> Lengkapi Profil</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="completion-tasks">
-                        <span class="completion-task done"><i class="fas fa-check-circle"></i> Foto Profil</span>
-                        <span class="completion-task done"><i class="fas fa-check-circle"></i> Data Diri</span>
-                        <span class="completion-task pending"><i class="fas fa-exclamation-circle"></i> Upload CV</span>
-                        <span class="completion-task done"><i class="fas fa-check-circle"></i> Pendidikan</span>
                     </div>
                 </div>
             </div>
@@ -779,11 +682,10 @@
         <div class="row mb-4">
             <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
                 <div class="stat-card primary">
-                    <span class="stat-trend up"><i class="fas fa-arrow-up mr-1"></i> 12%</span>
                     <div class="stat-icon primary">
                         <i class="fas fa-paper-plane"></i>
                     </div>
-                    <div class="stat-value">{{ $totalLamaran ?? 8 }}</div>
+                    <div class="stat-value">{{ $stats['total'] }}</div>
                     <div class="stat-label">Total Lamaran</div>
                 </div>
             </div>
@@ -792,7 +694,7 @@
                     <div class="stat-icon warning">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <div class="stat-value">{{ $pendingLamaran ?? 3 }}</div>
+                    <div class="stat-value">{{ $stats['pending'] + $stats['reviewed'] }}</div>
                     <div class="stat-label">Menunggu Review</div>
                 </div>
             </div>
@@ -801,7 +703,7 @@
                     <div class="stat-icon info">
                         <i class="fas fa-calendar-check"></i>
                     </div>
-                    <div class="stat-value">{{ $interviewCount ?? 2 }}</div>
+                    <div class="stat-value">{{ $stats['interview'] }}</div>
                     <div class="stat-label">Jadwal Interview</div>
                 </div>
             </div>
@@ -810,7 +712,7 @@
                     <div class="stat-icon success">
                         <i class="fas fa-check-circle"></i>
                     </div>
-                    <div class="stat-value">{{ $acceptedCount ?? 1 }}</div>
+                    <div class="stat-value">{{ $stats['accepted'] }}</div>
                     <div class="stat-label">Diterima</div>
                 </div>
             </div>
@@ -823,121 +725,82 @@
                 <div class="info-card">
                     <div class="card-header">
                         <h4><i class="fas fa-file-alt"></i> Status Lamaran Terbaru</h4>
-                        <a href="#" class="btn btn-sm btn-primary">Lihat Semua</a>
+                        @if($stats['total'] > 5)
+                        <a href="#" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                        @endif
                     </div>
                     <div class="card-body">
-                        @php
-                            $applications = [
-                                ['company' => 'PT. Teknologi Nusantara', 'position' => 'Frontend Developer', 'status' => 'interview', 'date' => '2 jam lalu', 'color' => '#667eea'],
-                                ['company' => 'PT. Digital Indonesia', 'position' => 'UI/UX Designer', 'status' => 'review', 'date' => '1 hari lalu', 'color' => '#11998e'],
-                                ['company' => 'PT. Startup Maju', 'position' => 'Full Stack Developer', 'status' => 'pending', 'date' => '3 hari lalu', 'color' => '#f7971e'],
-                                ['company' => 'PT. Solusi Digital', 'position' => 'Backend Developer', 'status' => 'accepted', 'date' => '1 minggu lalu', 'color' => '#eb3349'],
-                            ];
-                        @endphp
-
-                        @foreach($applications as $app)
+                        @forelse($recentApplications as $application)
                         <div class="application-item">
-                            <div class="application-logo" style="background: {{ $app['color'] }};">
-                                {{ strtoupper(substr($app['company'], 4, 2)) }}
+                            @php
+                                $colors = ['#667eea', '#11998e', '#f7971e', '#eb3349', '#00c6fb', '#a855f7'];
+                                $color = $colors[array_rand($colors)];
+                            @endphp
+                            <div class="application-logo" style="background: {{ $application->status_color ?? $color }}">
+                                {{ strtoupper(substr($application->jobOpening->perusahaan ?? 'XX', 0, 2)) }}
                             </div>
                             <div class="application-info">
-                                <h6>{{ $app['position'] }}</h6>
-                                <small><i class="fas fa-building mr-1"></i> {{ $app['company'] }} • {{ $app['date'] }}</small>
+                                <h6>{{ $application->jobOpening->judul ?? 'Posisi tidak tersedia' }}</h6>
+                                <small>
+                                    <i class="fas fa-building mr-1"></i>
+                                    {{ $application->jobOpening->perusahaan ?? '-' }}
+                                    • Dilamar {{ $application->created_at->locale('id')->diffForHumans() }}
+                                </small>
                             </div>
-                            <span class="application-status {{ $app['status'] }}">
-                                @if($app['status'] == 'pending')
-                                    <i class="fas fa-clock mr-1"></i> Pending
-                                @elseif($app['status'] == 'review')
-                                    <i class="fas fa-search mr-1"></i> Review
-                                @elseif($app['status'] == 'interview')
-                                    <i class="fas fa-calendar mr-1"></i> Interview
-                                @elseif($app['status'] == 'accepted')
-                                    <i class="fas fa-check mr-1"></i> Diterima
-                                @elseif($app['status'] == 'rejected')
-                                    <i class="fas fa-times mr-1"></i> Ditolak
-                                @endif
+                            <span class="application-status text-white" style="background-color: {{ $application->status_color ?? '#6c757d' }}">
+                                <i class="{{ $application->status_icon ?? 'fas fa-circle' }} mr-1"></i>
+                                {{ $application->status_label ?? ucfirst($application->status) }}
                             </span>
                         </div>
-                        @endforeach
+                        @empty
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h6>Belum Ada Lamaran</h6>
+                            <p>Anda belum melamar pekerjaan apapun.</p>
+                            <a href="{{ route('lowongan-kerja.index') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search mr-1"></i> Cari Lowongan
+                            </a>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
 
                 <!-- Rekomendasi Lowongan -->
                 <div class="info-card">
                     <div class="card-header">
-                        <h4><i class="fas fa-magic"></i> Rekomendasi Untuk Anda</h4>
+                        <h4><i class="fas fa-briefcase"></i> Rekomendasi Lowongan</h4>
                         <a href="{{ route('lowongan-kerja.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                     </div>
                     <div class="card-body">
-                        @php
-                            $recommendations = [
-                                ['title' => 'Senior React Developer', 'company' => 'PT. Tech Solutions', 'location' => 'Jakarta', 'type' => 'Full-time', 'match' => 95],
-                                ['title' => 'Frontend Engineer', 'company' => 'PT. Startup Indonesia', 'location' => 'Remote', 'type' => 'Full-time', 'match' => 88],
-                                ['title' => 'Web Developer', 'company' => 'PT. Digital Agency', 'location' => 'Yogyakarta', 'type' => 'Contract', 'match' => 82],
-                            ];
-                        @endphp
-
-                        @foreach($recommendations as $job)
+                        @forelse($recommendedJobs as $job)
                         <div class="job-recommendation">
                             <div class="job-header">
                                 <div>
-                                    <h6>{{ $job['title'] }}</h6>
-                                    <div class="company"><i class="fas fa-building mr-1"></i> {{ $job['company'] }}</div>
+                                    <h6>{{ $job->judul }}</h6>
+                                    <div class="company">
+                                        <i class="fas fa-building mr-1"></i> {{ $job->perusahaan }}
+                                    </div>
                                 </div>
-                                <span class="match-badge"><i class="fas fa-star mr-1"></i> {{ $job['match'] }}% Match</span>
+                                <span class="type-badge">{{ ucfirst($job->tipe ?? 'Full Time') }}</span>
                             </div>
                             <div class="job-meta">
-                                <span><i class="fas fa-map-marker-alt"></i> {{ $job['location'] }}</span>
-                                <span><i class="fas fa-briefcase"></i> {{ $job['type'] }}</span>
-                                <span><i class="fas fa-clock"></i> Baru diposting</span>
+                                <span><i class="fas fa-map-marker-alt"></i> {{ $job->lokasi ?? 'Indonesia' }}</span>
+                                <span><i class="fas fa-tags"></i> {{ $job->category ?? 'Umum' }}</span>
+                                <span><i class="fas fa-clock"></i> {{ $job->created_at->locale('id')->diffForHumans() }}</span>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{{ route('lowongan-kerja.show', $job->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye mr-1"></i> Lihat Detail
+                                </a>
                             </div>
                         </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="col-lg-4">
-                <!-- Jadwal Interview -->
-                <div class="info-card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-calendar-alt"></i> Jadwal Interview</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="interview-card upcoming">
-                            <div class="interview-date">
-                                <div class="date-box">
-                                    <span class="day">15</span>
-                                    <span class="month">Des</span>
-                                </div>
-                                <div class="interview-info">
-                                    <h6>Frontend Developer</h6>
-                                    <small>PT. Teknologi Nusantara</small>
-                                </div>
-                            </div>
-                            <div class="interview-time">
-                                <i class="fas fa-clock"></i> 10:00 - 11:00 WIB
-                                <span class="ml-auto badge badge-success">Besok</span>
-                            </div>
+                        @empty
+                        <div class="empty-state">
+                            <i class="fas fa-briefcase"></i>
+                            <h6>Tidak Ada Rekomendasi</h6>
+                            <p>Belum ada lowongan yang cocok untuk Anda saat ini.</p>
                         </div>
-
-                        <div class="interview-card">
-                            <div class="interview-date">
-                                <div class="date-box">
-                                    <span class="day">20</span>
-                                    <span class="month">Des</span>
-                                </div>
-                                <div class="interview-info">
-                                    <h6>UI/UX Designer</h6>
-                                    <small>PT. Digital Indonesia</small>
-                                </div>
-                            </div>
-                            <div class="interview-time">
-                                <i class="fas fa-clock"></i> 14:00 - 15:00 WIB
-                                <span class="ml-auto badge badge-secondary">5 hari lagi</span>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -957,17 +820,17 @@
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
-                        <a href="#" class="quick-action">
+                        <a href="" class="quick-action">
                             <div class="action-icon">
                                 <i class="fas fa-file-upload"></i>
                             </div>
                             <div class="action-text">
-                                <h6>Upload CV</h6>
-                                <small>Perbarui CV Anda</small>
+                                <h6>Lengkapi CV</h6>
+                                <small>Perbarui data CV Anda</small>
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
-                        <a href="#" class="quick-action">
+                        <a href="" class="quick-action">
                             <div class="action-icon">
                                 <i class="fas fa-user-edit"></i>
                             </div>
@@ -977,73 +840,150 @@
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
-                        <a href="#" class="quick-action">
-                            <div class="action-icon">
-                                <i class="fas fa-history"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Jadwal Interview -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-calendar-alt"></i> Jadwal Interview</h4>
+                    </div>
+                    <div class="card-body">
+                        @forelse($upcomingInterviews as $interview)
+                        @php
+                            $interviewDate = \Carbon\Carbon::parse($interview->interview_date);
+                            $isToday = $interviewDate->isToday();
+                            $isTomorrow = $interviewDate->isTomorrow();
+                            $daysUntil = now()->diffInDays($interviewDate, false);
+                            
+                            $cardClass = $isToday ? 'today' : ($isTomorrow ? 'upcoming' : '');
+                            $badgeClass = $isToday ? 'badge-danger' : ($isTomorrow ? 'badge-success' : 'badge-secondary');
+                            $badgeText = $isToday ? 'Hari Ini' : ($isTomorrow ? 'Besok' : ceil($daysUntil ). ' hari lagi');
+                        @endphp
+                        <div class="interview-card {{ $cardClass }}">
+                            <div class="interview-date">
+                                <div class="date-box">
+                                    <span class="day">{{ $interviewDate->format('d') }}</span>
+                                    <span class="month">{{ $interviewDate->locale('id')->isoFormat('MMM') }}</span>
+                                </div>
+                                <div class="interview-info">
+                                    <h6>{{ $interview->jobOpening->judul ?? 'Posisi tidak tersedia' }}</h6>
+                                    <small>{{ $interview->jobOpening->perusahaan ?? '-' }}</small>
+                                </div>
                             </div>
-                            <div class="action-text">
-                                <h6>Riwayat Lamaran</h6>
-                                <small>Lihat semua lamaran</small>
+                            <div class="interview-details">
+                                <span>
+                                    <i class="fas fa-clock"></i> 
+                                    {{ $interviewDate->format('H:i') }} WIB
+                                </span>
+                                @if($interview->interview_type)
+                                <span class="interview-type-badge {{ $interview->interview_type }}">
+                                    {{ ucfirst($interview->interview_type) }}
+                                </span>
+                                @endif
+                                <span class="ml-auto badge {{ $badgeClass }}">{{ $badgeText }}</span>
                             </div>
-                            <i class="fas fa-chevron-right action-arrow"></i>
-                        </a>
+                            @if($interview->interview_location)
+                            <div class="mt-2" style="font-size: 0.8rem; color: #6c757d;">
+                                <i class="fas fa-{{ $interview->interview_type == 'online' ? 'link' : 'map-marker-alt' }} mr-1"></i>
+                                @if($interview->interview_type == 'online')
+                                    <a href="{{ $interview->interview_location }}" target="_blank">{{ Str::limit($interview->interview_location, 30) }}</a>
+                                @else
+                                    {{ Str::limit($interview->interview_location, 40) }}
+                                @endif
+                            </div>
+                            @endif
+                            @if($interview->interview_notes)
+                            <div class="mt-2" style="font-size: 0.8rem; color: #6c757d; font-style: italic;">
+                                <i class="fas fa-sticky-note mr-1"></i>
+                                {{ Str::limit($interview->interview_notes, 50) }}
+                            </div>
+                            @endif
+                        </div>
+                        @empty
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h6>Tidak Ada Jadwal</h6>
+                            <p>Belum ada jadwal interview untuk Anda.</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
 
                 <!-- Skills -->
                 <div class="info-card">
                     <div class="card-header">
-                        <h4><i class="fas fa-code"></i> Skill Match</h4>
+                        <h4><i class="fas fa-code"></i> Keahlian Anda</h4>
+                        <a href="" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
                     </div>
                     <div class="card-body">
-                        @php
-                            $skills = [
-                                ['name' => 'JavaScript', 'percentage' => 90],
-                                ['name' => 'React.js', 'percentage' => 85],
-                                ['name' => 'HTML/CSS', 'percentage' => 95],
-                                ['name' => 'Node.js', 'percentage' => 70],
-                                ['name' => 'Git', 'percentage' => 80],
-                            ];
-                        @endphp
+                        @if(Auth::user()->cv && Auth::user()->cv->hardskills && count(Auth::user()->cv->hardskills) > 0)
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-2">Hard Skills</small>
+                                @foreach(Auth::user()->cv->hardskills as $skill)
+                                    <span class="skill-badge">{{ $skill }}</span>
+                                @endforeach
+                            </div>
+                        @endif
 
-                        @foreach($skills as $skill)
-                        <div class="skill-item">
-                            <div class="skill-info">
-                                <span class="skill-name">{{ $skill['name'] }}</span>
-                                <span class="skill-percentage">{{ $skill['percentage'] }}%</span>
+                        @if(Auth::user()->cv && Auth::user()->cv->softskills && count(Auth::user()->cv->softskills) > 0)
+                            <div>
+                                <small class="text-muted d-block mb-2">Soft Skills</small>
+                                @foreach(Auth::user()->cv->softskills as $skill)
+                                    <span class="skill-badge" style="background: var(--success-gradient);">{{ $skill }}</span>
+                                @endforeach
                             </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: {{ $skill['percentage'] }}%;"></div>
+                        @endif
+
+                        @if(!Auth::user()->cv || (empty(Auth::user()->cv->hardskills) && empty(Auth::user()->cv->softskills)))
+                            <div class="empty-state">
+                                <i class="fas fa-code"></i>
+                                <h6>Belum Ada Keahlian</h6>
+                                <p>Tambahkan keahlian Anda untuk meningkatkan peluang diterima.</p>
+                                <a href="{{ route('cv.edit') }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Keahlian
+                                </a>
                             </div>
-                        </div>
-                        @endforeach
+                        @endif
                     </div>
                 </div>
 
-                <!-- Activity Timeline -->
+                <!-- Statistik Lamaran -->
                 <div class="info-card">
                     <div class="card-header">
-                        <h4><i class="fas fa-stream"></i> Aktivitas Terbaru</h4>
+                        <h4><i class="fas fa-chart-pie"></i> Statistik Lamaran</h4>
                     </div>
                     <div class="card-body">
-                        <div class="activity-timeline">
-                            <div class="activity-item success">
-                                <div class="activity-time">Hari ini, 10:30</div>
-                                <div class="activity-text">Lamaran Anda di <strong>PT. Tech Solutions</strong> diterima untuk tahap interview</div>
+                        @if($stats['total'] > 0)
+                        <div class="d-flex justify-content-center mb-3">
+                            <canvas id="applicationChart" width="180" height="180"></canvas>
+                        </div>
+                        <div class="row text-center" style="font-size: 0.85rem;">
+                            <div class="col-4">
+                                <div style="color: #f7971e; font-weight: 700;">{{ $stats['pending'] + $stats['reviewed'] }}</div>
+                                <small class="text-muted">Proses</small>
                             </div>
-                            <div class="activity-item info">
-                                <div class="activity-time">Kemarin, 14:00</div>
-                                <div class="activity-text">Anda melamar posisi <strong>Frontend Developer</strong></div>
+                            <div class="col-4">
+                                <div style="color: #28a745; font-weight: 700;">{{ $stats['accepted'] }}</div>
+                                <small class="text-muted">Diterima</small>
                             </div>
-                            <div class="activity-item warning">
-                                <div class="activity-time">2 hari lalu</div>
-                                <div class="activity-text">Profil Anda dilihat oleh <strong>3 perusahaan</strong></div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-time">1 minggu lalu</div>
-                                <div class="activity-text">Anda memperbarui <strong>CV</strong></div>
+                            <div class="col-4">
+                                <div style="color: #dc3545; font-weight: 700;">{{ $stats['rejected'] }}</div>
+                                <small class="text-muted">Ditolak</small>
                             </div>
                         </div>
+                        @else
+                        <div class="empty-state">
+                            <i class="fas fa-chart-pie"></i>
+                            <h6>Belum Ada Data</h6>
+                            <p>Mulai melamar untuk melihat statistik.</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -1053,12 +993,43 @@
 @endsection
 
 @push('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 $(document).ready(function() {
-    // Animate progress bars on load
+    // Application Chart
+    @if($stats['total'] > 0)
+    const ctx = document.getElementById('applicationChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Proses', 'Interview', 'Diterima', 'Ditolak'],
+            datasets: [{
+                data: [
+                    {{ $stats['pending'] + $stats['reviewed'] }},
+                    {{ $stats['interview'] }},
+                    {{ $stats['accepted'] }},
+                    {{ $stats['rejected'] }}
+                ],
+                backgroundColor: ['#f7971e', '#667eea', '#28a745', '#dc3545'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+    @endif
+
+    // Animate progress bars
     setTimeout(function() {
-        $('.completion-progress').css('width', '{{ $profileCompletion ?? 75 }}%');
-        $('.skill-progress').each(function() {
+        $('.completion-progress').each(function() {
             var width = $(this).css('width');
             $(this).css('width', '0').animate({width: width}, 1000);
         });

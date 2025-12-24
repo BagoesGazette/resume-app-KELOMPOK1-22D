@@ -37,6 +37,9 @@ return new class extends Migration
             // Validation status
             $table->boolean('is_validated')->default(false);
             $table->timestamp('validated_at')->nullable();
+
+            $table->integer('total_pengalaman')->nullable();
+            $table->integer('tipe_pendidikan')->nullable();
             
             // Timestamps
             $table->timestamps();

@@ -19,17 +19,6 @@ return new class extends Migration
             // Status lamaran
             $table->enum('status', ['draft', 'submitted', 'reviewed', 'interview', 'accepted', 'rejected'])->default('draft');
             
-            // Data dari CV (snapshot)
-            $table->string('pendidikan_terakhir')->nullable();
-            $table->text('rangkuman_pendidikan')->nullable();
-            $table->string('ipk_nilai_akhir')->nullable();
-            $table->string('pengalaman_kerja_terakhir')->nullable();
-            $table->text('rangkuman_pengalaman_kerja')->nullable();
-            $table->text('rangkuman_sertifikasi_prestasi')->nullable();
-            $table->text('rangkuman_profil')->nullable();
-            $table->json('hardskills')->nullable();
-            $table->json('softskills')->nullable();
-            
             // Additional data
             $table->text('cover_letter')->nullable();
             $table->string('expected_salary')->nullable();

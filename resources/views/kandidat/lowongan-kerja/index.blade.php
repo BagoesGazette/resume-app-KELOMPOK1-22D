@@ -566,7 +566,7 @@
         <div class="filter-bar">
             <form action="" method="GET">
                 <div class="row align-items-center">
-                    <div class="col-md-4 mb-2 mb-md-0">
+                    <div class="col-md-2 mb-2 mb-md-0">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-white border-right-0">
@@ -587,11 +587,11 @@
                     </div>
                     <div class="col-md-2 mb-2 mb-md-0">
                         <select class="form-control" name="tipe">
-                            <option value="">Semua Tipe</option>
-                            <option value="full-time">Full-time</option>
-                            <option value="part-time">Part-time</option>
-                            <option value="contract">Contract</option>
-                            <option value="internship">Internship</option>
+                            <option value="" {{ request('tipe') == null ? 'selected' : '' }}>Semua Tipe</option>
+                            <option value="full-time" {{ request('tipe') == 'full-time' ? 'selected' : '' }}>Full-time</option>
+                            <option value="part-time" {{ request('tipe') == 'part-time' ? 'selected' : '' }}>Part-time</option>
+                            <option value="contract" {{ request('tipe') == 'contract' ? 'selected' : '' }}>Contract</option>
+                            <option value="internship" {{ request('tipe') == 'internship' ? 'selected' : '' }}>Internship</option>
                         </select>
                     </div>
                     <div class="col-md-2 mb-2 mb-md-0">
@@ -606,6 +606,11 @@
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-primary btn-block">
                             <i class="fas fa-filter mr-1"></i> Filter
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-light btn-block">
+                            <i class="fa fa-undo mr-1"></i> Reset
                         </button>
                     </div>
                 </div>

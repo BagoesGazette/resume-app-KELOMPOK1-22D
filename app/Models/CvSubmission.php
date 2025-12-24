@@ -28,6 +28,8 @@ class CvSubmission extends Model
         'rangkuman_profil',
         'hardskills',
         'softskills',
+        'total_pengalaman',
+        'tipe_pendidikan',
         'is_validated',
         'validated_at',
     ];

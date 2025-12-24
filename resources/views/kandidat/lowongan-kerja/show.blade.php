@@ -540,7 +540,7 @@
                             <div class="stat-item">
                                 <i class="fas fa-users text-primary"></i>
                                 <div>
-                                    <div class="stat-number">{{ $totalPelamar ?? 48 }}</div>
+                                    <div class="stat-number">{{ $lowongan->apply->count()  }}</div>
                                     <div class="stat-label">Total Pelamar</div>
                                 </div>
                             </div>
@@ -726,9 +726,16 @@
                             </a>
                         </div>
                         <div>
-                            <a href="{{ route('lowongan-kerja.form', $lowongan->id) }}" class="btn btn-primary">
-                                <i class="fas fa-check mr-1"></i> Lamar
-                            </a>
+                            @if ($exists)
+                              <a href="{{ route('lowongan-kerja.detail', $exists->id) }}" class="btn btn-primary">
+                                  <i class="fas fa-info-circle mr-1"></i> Detail
+                              </a>
+                            @else
+                              <a href="{{ route('lowongan-kerja.form', $lowongan->id) }}" class="btn btn-primary">
+                                  <i class="fas fa-check mr-1"></i> Lamar
+                              </a>
+                            @endif
+                            
                         </div>
                     </div>
                 </div>

@@ -74,66 +74,66 @@ class SubKriteriaSeed extends Seeder
                 'name'  => '< 1',
                 'bobot' => 1,
             ],
-            [
-                'kriteria_id'  => 4,
-                'name'  => '≥ 3',
-                'bobot' => 4,
-            ],
-            [
-                'kriteria_id'  => 4,
-                'name'  => '2',
-                'bobot' => 3,
-            ],
-            [
-                'kriteria_id'  => 4,
-                'name'  => '1',
-                'bobot' => 2,
-            ],
-            [
-                'kriteria_id'  => 4,
-                'name'  => '0',
-                'bobot' => 1,
-            ],
-            [
-                'kriteria_id'  => 5,
-                'name'  => '≥ 85',
-                'bobot' => 4,
-            ],
-            [
-                'kriteria_id'  => 5,
-                'name'  => '70 - 84',
-                'bobot' => 3,
-            ],
-            [
-                'kriteria_id'  => 5,
-                'name'  => '50 - 69',
-                'bobot' => 2,
-            ],
-            [
-                'kriteria_id'  => 5,
-                'name'  => '< 50',
-                'bobot' => 1,
-            ],
-            [
-                'kriteria_id'  => 6,
-                'name'  => '≥ 4.5',
-                'bobot' => 4,
-            ],
-            [
-                'kriteria_id'  => 6,
-                'name'  => '3.5 - 4.49',
-                'bobot' => 3,
-            ],
-            [
-                'kriteria_id'  => 6,
-                'name'  => '2.5 - 3.49',
-                'bobot' => 2,
-            ],
-            [
-                'kriteria_id'  => 6,
-                'name'  => '< 2.5',
-                'bobot' => 1,
-            ],
+            // [
+            //     'kriteria_id'  => 4,
+            //     'name'  => '≥ 3',
+            //     'bobot' => 4,
+            // ],
+            // [
+            //     'kriteria_id'  => 4,
+            //     'name'  => '2',
+            //     'bobot' => 3,
+            // ],
+            // [
+            //     'kriteria_id'  => 4,
+            //     'name'  => '1',
+            //     'bobot' => 2,
+            // ],
+            // [
+            //     'kriteria_id'  => 4,
+            //     'name'  => '0',
+            //     'bobot' => 1,
+            // ],
+            // [
+            //     'kriteria_id'  => 5,
+            //     'name'  => '≥ 85',
+            //     'bobot' => 4,
+            // ],
+            // [
+            //     'kriteria_id'  => 5,
+            //     'name'  => '70 - 84',
+            //     'bobot' => 3,
+            // ],
+            // [
+            //     'kriteria_id'  => 5,
+            //     'name'  => '50 - 69',
+            //     'bobot' => 2,
+            // ],
+            // [
+            //     'kriteria_id'  => 5,
+            //     'name'  => '< 50',
+            //     'bobot' => 1,
+            // ],
+            // [
+            //     'kriteria_id'  => 6,
+            //     'name'  => '≥ 4.5',
+            //     'bobot' => 4,
+            // ],
+            // [
+            //     'kriteria_id'  => 6,
+            //     'name'  => '3.5 - 4.49',
+            //     'bobot' => 3,
+            // ],
+            // [
+            //     'kriteria_id'  => 6,
+            //     'name'  => '2.5 - 3.49',
+            //     'bobot' => 2,
+            // ],
+            // [
+            //     'kriteria_id'  => 6,
+            //     'name'  => '< 2.5',
+            //     'bobot' => 1,
+            // ],
         ];
 
         foreach ($data as $item) {
