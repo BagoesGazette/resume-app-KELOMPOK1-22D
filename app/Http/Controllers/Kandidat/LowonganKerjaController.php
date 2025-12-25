@@ -82,6 +82,7 @@ class LowonganKerjaController extends Controller
                 [ 
                     'cv_file_url' => $uploadResult['url'],
                     'cv_file_name' => $uploadResult['name'],
+                    'original_file_name' => $uploadResult['original_name'],
                     'cv_file_type' => $uploadResult['type'],
                     'cv_file_size' => $uploadResult['size'],
                     'status' => 'pending', 

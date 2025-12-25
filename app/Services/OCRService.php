@@ -22,6 +22,15 @@ class OCRService
      */
     public function extractText(string $filePath, string $fileType): string
     {
+        // TAMBAHAN: Pastikan file path valid, jika tidak coba cari di storage path
+        if (!file_exists($filePath)) {
+            // Coba resolve path jika yang dikirim adalah relative path (misal: cvs/1/file.pdf)
+            $potentialPath = storage_path('app/public/' . $filePath);
+            if (file_exists($potentialPath)) {
+                $filePath = $potentialPath;
+            }
+        }
+
         $attempt = 0;
         $lastException = null;
 

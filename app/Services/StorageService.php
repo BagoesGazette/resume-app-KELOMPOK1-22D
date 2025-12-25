@@ -12,11 +12,11 @@ class StorageService
 
     public function __construct()
     {
-        $this->disk = 's3'; 
+        $this->disk = 'public';
     }
 
     /**
-     * Upload file to Vultr S3
+     * Upload file to Local Storage (Public)
      */
     public function uploadCV(UploadedFile $file, int $userId): array
     {
@@ -31,24 +31,31 @@ class StorageService
             $fileName = $this->generateFileName($file, $userId);
             $path = "cvs/{$userId}/{$fileName}";
 
-            // Upload to S3
-            $uploaded = Storage::disk($this->disk)->put($path, file_get_contents($file), 'public');
+            // UBAH: Upload ke local storage (public disk)
+            // putFileAs atau put bisa digunakan. 
+            $uploaded = Storage::disk($this->disk)->put($path, file_get_contents($file));
 
             if (!$uploaded) {
-                throw new \Exception('Failed to upload file to S3');
+                throw new \Exception('Failed to upload file to Local Storage');
             }
 
-            $url = Storage::disk($this->disk)->url($path);
+            // URL untuk diakses browser (e.g., /storage/cvs/...)
+            $url = Storage::url($path);
+            
+            // TAMBAHAN PENTING: Path absolut sistem untuk OCRService (C:\laragon\...\storage\app\public\...)
+            $systemPath = Storage::disk($this->disk)->path($path);
 
             Log::info('StorageService: CV uploaded successfully', [
                 'user_id' => $userId,
                 'path' => $path,
                 'url' => $url,
+                'system_path' => $systemPath
             ]);
 
             return [
-                'url' => $url,
-                'path' => $path,
+                'url' => $url,           // Untuk ditampilkan di Blade (link)
+                'path' => $path,         // Untuk disimpan di DB (relative path)
+                'system_path' => $systemPath, // Untuk diproses oleh OCRService
                 'name' => $fileName,
                 'original_name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
@@ -72,7 +79,6 @@ class StorageService
         $extension = $file->getClientOriginalExtension();
         $timestamp = now()->format('YmdHis');
         $random = substr(md5(uniqid()), 0, 8);
-        
         return "cv_{$userId}_{$timestamp}_{$random}.{$extension}";
     }
 
@@ -109,36 +115,26 @@ class StorageService
     /**
      * Download file from S3
      */
-    public function downloadFile(string $path): string
-    {
-        try {
-            Log::info('StorageService: Downloading file from S3', ['path' => $path]);
+    // public function downloadFile(string $path): string
+    // {
+    //     try {
+    //         Log::info('StorageService: Downloading file from S3', ['path' => $path]);
             
-            return Storage::disk($this->disk)->get($path);
-        } catch (\Exception $e) {
-            Log::error('StorageService: Failed to download file', [
-                'path' => $path,
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
-        }
-    }
+    //         return Storage::disk($this->disk)->get($path);
+    //     } catch (\Exception $e) {
+    //         Log::error('StorageService: Failed to download file', [
+    //             'path' => $path,
+    //             'error' => $e->getMessage(),
+    //         ]);
+    //         throw $e;
+    //     }
+    // }
 
     /**
      * Delete file from S3
      */
     public function deleteFile(string $path): bool
     {
-        try {
-            Log::info('StorageService: Deleting file from S3', ['path' => $path]);
-            
-            return Storage::disk($this->disk)->delete($path);
-        } catch (\Exception $e) {
-            Log::error('StorageService: Failed to delete file', [
-                'path' => $path,
-                'error' => $e->getMessage(),
-            ]);
-            return false;
-        }
+        return Storage::disk($this->disk)->delete($path);
     }
 }

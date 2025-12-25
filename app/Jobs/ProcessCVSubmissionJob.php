@@ -103,23 +103,25 @@ class ProcessCVSubmissionJob implements ShouldQueue
             $tempFileName = 'cv_' . $submission->id . '_' . time() . '.' . $this->getFileExtension($submission->cv_file_type);
             $tempFilePath = $tempDir . '/' . $tempFileName;
 
-            Log::info('ProcessCVSubmissionJob: Downloading from S3', [
+            Log::info('ProcessCVSubmissionJob: Downloading from Local Storage', [
                 'submission_id' => $submission->id,
                 'url' => $submission->cv_file_url,
             ]);
 
+            // Convert public URL (/storage/cvs/...) to storage path (cvs/...)
             $urlPath = parse_url($submission->cv_file_url, PHP_URL_PATH);
-            $s3Key = ltrim($urlPath, '/');
-            
-            $bucketName = config('filesystems.disks.s3.bucket');
-            $s3Key = str_replace($bucketName . '/', '', $s3Key);
+            $relativePath = ltrim(str_replace('/storage/', '', $urlPath), '/');
 
-            Log::info('ProcessCVSubmissionJob: S3 key extracted', [
+            Log::info('ProcessCVSubmissionJob: Relative path extracted', [
                 'submission_id' => $submission->id,
-                's3_key' => $s3Key,
+                'relative_path' => $relativePath,
             ]);
 
-            $fileContent = Storage::disk('s3')->get($s3Key);
+            if (!Storage::disk('public')->exists($relativePath)) {
+                throw new \Exception("File not found on public disk at path: {$relativePath}");
+            }
+
+            $fileContent = Storage::disk('public')->get($relativePath);
             
             if (empty($fileContent)) {
                 throw new \Exception('Downloaded file is empty');

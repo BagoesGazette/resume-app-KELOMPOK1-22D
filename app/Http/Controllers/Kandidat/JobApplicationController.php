@@ -114,7 +114,7 @@ class JobApplicationController extends Controller
             'user_id' => auth()->id(),
         ]);
         
-        return redirect()->route('lowongan-kerja.index')
+        return redirect()->route('lowongan-kerja.index', $application->jobopening_id)
             ->with('success', 'Lamaran berhasil dikirim!');
     }
 

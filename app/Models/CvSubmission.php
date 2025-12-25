@@ -14,6 +14,7 @@ class CvSubmission extends Model
         'user_id',
         'cv_file_url',
         'cv_file_name',
+        'original_file_name',
         'cv_file_type',
         'cv_file_size',
         'status',

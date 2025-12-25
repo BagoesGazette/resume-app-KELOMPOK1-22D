@@ -353,6 +353,7 @@
                     {{ $jobOpening->posisi }}
                 </div>
             </div>
+            
 
             <!-- Form -->
             <form action="{{ route('lamaran.submit', $application->id) }}" method="POST" id="applicationForm" autocomplete="off">
@@ -616,7 +617,7 @@
 
                 <!-- Submit Buttons -->
                 <div class="submit-buttons">
-                    <a href="{{ route('lowongan-kerja.show', $jobOpening->id) }}" class="btn btn-secondary">
+                    <a href="{{ route('lowongan-kerja.index', $jobOpening->id) }}" class="btn btn-secondary">
                         <i class="fas fa-times"></i>
                         Batal
                     </a>
