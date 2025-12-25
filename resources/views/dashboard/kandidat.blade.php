@@ -947,7 +947,7 @@
                                 <p>Tambahkan keahlian Anda untuk meningkatkan peluang diterima.</p>
                                 <a href="{{ route('cv.edit') }}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-plus mr-1"></i> Tambah Keahlian
-                                </a>
+                                </a> 
                             </div>
                         @endif
                     </div>

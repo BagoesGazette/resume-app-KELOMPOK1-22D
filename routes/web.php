@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/lowongan-kerja/{id}/detail', [LowonganKerjaController::class, 'detail'])->name('lowongan-kerja.detail');
     Route::post('/lowongan-kerja/cv', [LowonganKerjaController::class, 'store'])->name('cv.store');
     Route::get('/cv-submission/{id}/status', [LowonganKerjaController::class, 'status'])->name('cv.status');
+    Route::get('/cv/edit', [LowonganKerjaController::class, 'editCv'])->name('cv.edit');
     Route::post('/lowongan-kerja/{id}/process-cv', [JobApplicationController::class, 'processCv'])->name('lowongan-kerja.process-cv');
     //Route::get('/lowongan-kerja/{id}/detail', [LowonganKerjaController::class, 'detail'])->name('lowongan-kerja.detail');
 

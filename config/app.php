@@ -124,5 +124,6 @@ return [
     ],
 
     'error_reporting' => E_ALL & ~E_WARNING & ~E_DEPRECATED & ~E_NOTICE,
+    'use_db_for_keys' => env('USE_DB_FOR_KEYS', true),
 
 ];
