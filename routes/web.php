@@ -12,9 +12,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'registerProses'])->name('register');
+Route::post('/register', [AuthController::class, 'registerProses'])->name('register.custom');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/login', [AuthController::class, 'loginProses'])->name('login');
+Route::post('/login', [AuthController::class, 'loginProses'])->name('login.custom');
 Route::get('/confirm-email/{id}', [AuthController::class, 'confirmEmail'])->name('confirm-email');
 
 
