@@ -820,17 +820,7 @@
                             </div>
                             <i class="fas fa-chevron-right action-arrow"></i>
                         </a>
-                        <a href="" class="quick-action">
-                            <div class="action-icon">
-                                <i class="fas fa-file-upload"></i>
-                            </div>
-                            <div class="action-text">
-                                <h6>Lengkapi CV</h6>
-                                <small>Perbarui data CV Anda</small>
-                            </div>
-                            <i class="fas fa-chevron-right action-arrow"></i>
-                        </a>
-                        <a href="" class="quick-action">
+                        <a href="{{ route('profile.index') }}" class="quick-action">
                             <div class="action-icon">
                                 <i class="fas fa-user-edit"></i>
                             </div>

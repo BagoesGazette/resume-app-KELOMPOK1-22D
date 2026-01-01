@@ -111,5 +111,25 @@
   <!-- Template JS File -->
   <script src="{{ asset('assets/js/scripts.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+  <script>
+    setInterval(function() {
+      check_lowongan();
+    }, 5000);
+
+    function check_lowongan() {
+        $.ajax({
+            url: "{{ route('job.check-status') }}",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+              console.log('oke');
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error:', status, error); // Debug kesalahan
+                console.error('Response:', xhr.responseText); // Debug respon server
+            }
+        });
+    }
+  </script>
 </body>
 </html>

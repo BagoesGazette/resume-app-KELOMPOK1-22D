@@ -65,4 +65,10 @@ Route::group(['middleware' => ['auth']], function(){
     Route::delete('/hasil/{id}/cancel', [HasilController::class, 'cancel'])->name('kandidat.hasil.cancel');
     Route::get('/hasil/export/excel', [HasilController::class, 'exportExcel'])->name('kandidat.hasil.export.excel');
     Route::get('/hasil/export/pdf', [HasilController::class, 'exportPdf'])->name('kandidat.hasil.export.pdf');
+
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile.index');
+    Route::post('/profile/update', [AuthController::class, 'profileUpdate'])->name('profile.update');
+    Route::put('/profile/password', action: [AuthController::class, 'updatePassword'])->name('profile.password');
+
+    Route::get('/check-status-job', [JobController::class, 'checkStatus'])->name('job.check-status');
 });

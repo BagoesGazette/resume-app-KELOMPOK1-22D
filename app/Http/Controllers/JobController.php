@@ -475,4 +475,21 @@ class JobController extends Controller
         
         return $pdf->download($filename);
     }
+
+    public function checkStatus()
+    {
+        $job = JobOpening::where('status', 'open')
+        ->get();
+
+        foreach ($job as $item) {
+            $daysLeft = now()->diffInDays($item->tanggal_tutup, false);
+            if($daysLeft < 0){
+                $item->update([
+                    'status' => 'closed'
+                ]);
+            }
+        }
+
+        return response()->json(['status' => 'success']);
+    }
 }
