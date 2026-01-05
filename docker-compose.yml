@@ -52,6 +52,15 @@ services:
       APP_KEY: ${APP_KEY}
       APP_DEBUG: ${APP_DEBUG:-false}
       APP_URL: ${APP_URL:-http://localhost}
+
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-tls}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: "${APP_NAME}"
       
       DB_CONNECTION: pgsql
       DB_HOST: postgres
@@ -104,6 +113,15 @@ services:
       APP_ENV: ${APP_ENV:-production}
       APP_KEY: ${APP_KEY}
       APP_DEBUG: ${APP_DEBUG:-false}
+
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-tls}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: "${APP_NAME}"
       
       DB_CONNECTION: pgsql
       DB_HOST: postgres
